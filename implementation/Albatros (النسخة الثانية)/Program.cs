@@ -92,58 +92,88 @@ using (var scope = app.Services.CreateScope())
     }
     context.SaveChanges();
 
-    // Remove property 24 (البالب)
-    var prop24 = context.Properties.Find(24);
-    if (prop24 != null)
-    {
-        context.PropertyImages.RemoveRange(context.PropertyImages.Where(i => i.PropertyId == 24));
-        context.Favorites.RemoveRange(context.Favorites.Where(f => f.PropertyId == 24));
-        context.Reviews.RemoveRange(context.Reviews.Where(r => r.PropertyId == 24));
-        context.VisitRequests.RemoveRange(context.VisitRequests.Where(v => v.PropertyId == 24));
-        context.Properties.Remove(prop24);
-        context.SaveChanges();
-    }
-
-    // Reassign all properties to the seller
+    // Seed 21 properties if none exist
     var seller = context.ApplicationUsers.First(u => u.Email == "seller@albatros.sa");
-    var orphanProps = context.Properties.Where(p => p.UserId != seller.UserId).ToList();
-    foreach (var p in orphanProps) p.UserId = seller.UserId;
-    context.SaveChanges();
-
-    // Seed images for "Duplex in Dammam 18" - replace old loremflickr images with Unsplash
-    var duplexProp = context.Properties
-        .Include(p => p.Images)
-        .FirstOrDefault(p => p.Title.Contains("Duplex in Dammam 18"));
-    if (duplexProp != null)
+    if (!context.Properties.Any())
     {
-        // Remove any old loremflickr images first
-        var oldDuplexImages = duplexProp.Images?.Where(i => i.ImageUrl.Contains("loremflickr")).ToList();
-        if (oldDuplexImages != null && oldDuplexImages.Count > 0)
+        var imageSets = new Dictionary<int, string[]>
         {
-            context.PropertyImages.RemoveRange(oldDuplexImages);
-            context.SaveChanges();
-        }
-
-        // Re-fetch to get updated state
-        context.Entry(duplexProp).Collection(p => p.Images).Load();
-    }
-    if (duplexProp != null && (duplexProp.Images == null || duplexProp.Images.Count == 0))
-    {
-        var duplexImages = new[]
-        {
-            "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800",
-            "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800",
-            "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800",
-            "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800",
-            "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800"
+            [1] = new[] { "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800", "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800", "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800" },
+            [2] = new[] { "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800", "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800" },
+            [3] = new[] { "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800", "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800", "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800" },
+            [4] = new[] { "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800", "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800" },
+            [5] = new[] { "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800", "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800", "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800" },
+            [6] = new[] { "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800", "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800", "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800" },
+            [7] = new[] { "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800", "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800" },
+            [8] = new[] { "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800", "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800", "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800" },
+            [9] = new[] { "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800", "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800" },
+            [10] = new[] { "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800", "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800", "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800" },
+            [11] = new[] { "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800", "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800", "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800" },
+            [12] = new[] { "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800", "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800" },
+            [13] = new[] { "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800", "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800", "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800" },
+            [14] = new[] { "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800", "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800" },
+            [15] = new[] { "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800", "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800", "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800" },
+            [16] = new[] { "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800", "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800", "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800" },
+            [17] = new[] { "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800", "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800" },
+            [18] = new[] { "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800", "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800", "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800" },
+            [19] = new[] { "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800", "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800" },
+            [20] = new[] { "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800", "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800", "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800" },
+            [21] = new[] { "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800", "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800", "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800" },
         };
-        foreach (var url in duplexImages)
+
+        var properties = new (string Title, string Desc, decimal Price, string City, int Bed, int Bath, double Area, int ListingType, int Status)[]
         {
-            context.PropertyImages.Add(new PropertyImage
+            ("Villa in Riyadh 1", "A beautiful Villa located in Riyadh with modern amenities.", 650000.00m, "Riyadh", 2, 1, 175.0, 0, 1),
+            ("Apartment in Jeddah 2", "A beautiful Apartment located in Jeddah with modern amenities.", 8000.00m, "Jeddah", 3, 2, 200.0, 1, 1),
+            ("Duplex in Dammam 3", "A beautiful Duplex located in Dammam with modern amenities.", 950000.00m, "Dammam", 4, 3, 225.0, 0, 1),
+            ("Palace in Mecca 4", "A beautiful Palace located in Mecca with modern amenities.", 15000.00m, "Mecca", 5, 1, 250.0, 1, 1),
+            ("Chalet in Khobar 5", "A beautiful Chalet located in Khobar with modern amenities.", 1250000.00m, "Khobar", 2, 2, 275.0, 0, 1),
+            ("Villa in Riyadh 6", "A beautiful Villa located in Riyadh with modern amenities.", 12000.00m, "Riyadh", 3, 3, 300.0, 1, 1),
+            ("Apartment in Jeddah 7", "A beautiful Apartment located in Jeddah with modern amenities.", 1550000.00m, "Jeddah", 4, 1, 325.0, 0, 1),
+            ("Duplex in Dammam 8", "A beautiful Duplex located in Dammam with modern amenities.", 9000.00m, "Dammam", 5, 2, 350.0, 1, 1),
+            ("Palace in Mecca 9", "A beautiful Palace located in Mecca with modern amenities.", 1850000.00m, "Mecca", 2, 3, 375.0, 0, 1),
+            ("Chalet in Khobar 10", "A beautiful Chalet located in Khobar with modern amenities.", 10000.00m, "Khobar", 3, 1, 400.0, 1, 1),
+            ("Villa in Riyadh 11", "A beautiful Villa located in Riyadh with modern amenities.", 2150000.00m, "Riyadh", 4, 2, 425.0, 0, 1),
+            ("Apartment in Jeddah 12", "A beautiful Apartment located in Jeddah with modern amenities.", 8500.00m, "Jeddah", 5, 3, 450.0, 1, 1),
+            ("Duplex in Dammam 13", "A beautiful Duplex located in Dammam with modern amenities.", 2450000.00m, "Dammam", 2, 1, 475.0, 0, 1),
+            ("Palace in Mecca 14", "A beautiful Palace located in Mecca with modern amenities.", 18000.00m, "Mecca", 3, 2, 500.0, 1, 1),
+            ("Chalet in Khobar 15", "A beautiful Chalet located in Khobar with modern amenities.", 2750000.00m, "Khobar", 4, 3, 525.0, 0, 1),
+            ("Villa in Riyadh 16", "A beautiful Villa located in Riyadh with modern amenities.", 14000.00m, "Riyadh", 5, 1, 550.0, 1, 1),
+            ("Apartment in Jeddah 17", "A beautiful Apartment located in Jeddah with modern amenities.", 3050000.00m, "Jeddah", 2, 2, 575.0, 0, 1),
+            ("Duplex in Dammam 18", "A beautiful Duplex located in Dammam with modern amenities.", 9500.00m, "Dammam", 3, 3, 600.0, 1, 1),
+            ("Palace in Mecca 19", "A beautiful Palace located in Mecca with modern amenities.", 3350000.00m, "Mecca", 4, 1, 625.0, 0, 1),
+            ("Chalet in Khobar 20", "A beautiful Chalet located in Khobar with modern amenities.", 11000.00m, "Khobar", 5, 2, 650.0, 1, 1),
+            ("Villa in Riyadh 21", "A beautiful Villa located in Riyadh with modern amenities.", 4500000.00m, "Riyadh", 6, 5, 550.0, 0, 1),
+        };
+
+        int pid = 0;
+        foreach (var p in properties)
+        {
+            pid++;
+            var prop = new Property
             {
-                PropertyId = duplexProp.PropertyId,
-                ImageUrl = url
-            });
+                Title = p.Title,
+                Description = p.Desc,
+                Price = p.Price,
+                City = p.City,
+                Bedrooms = p.Bed,
+                Bathrooms = p.Bath,
+                Area = p.Area,
+                ListingType = (ListingType)p.ListingType,
+                Status = (PropertyStatus)p.Status,
+                UserId = seller.UserId,
+                CreatedAt = new DateTime(2026, 7, 19, 22, 52, 08)
+            };
+            context.Properties.Add(prop);
+            context.SaveChanges();
+
+            if (imageSets.TryGetValue(pid, out var urls))
+            {
+                foreach (var url in urls)
+                {
+                    context.PropertyImages.Add(new PropertyImage { PropertyId = prop.PropertyId, ImageUrl = url });
+                }
+            }
         }
         context.SaveChanges();
     }
