@@ -1,0 +1,64 @@
+@model Albatros.Models.Property
+@{
+    ViewData["Title"] = "Admin Edit Property";
+}
+
+<div class="admin-card" style="max-width:800px; margin:0 auto;">
+    <h1 style="font-size:24px; font-weight:700; margin-bottom:24px;">Edit Listing Details (#@Model.PropertyId)</h1>
+
+    <form asp-area="Admin" asp-controller="AdminProperties" asp-action="Edit" asp-route-id="@Model.PropertyId" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="PropertyId" />
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px;">
+            <div style="grid-column:span 2;">
+                <label style="display:block; font-size:12px; font-weight:600; color:#8A8580; margin-bottom:6px; text-transform:uppercase;">Property Title</label>
+                <input asp-for="Title" type="text" style="width:100%; padding:10px 14px; border:1px solid #EFEDE9; border-radius:8px; font-size:14px;" required />
+            </div>
+
+            <div>
+                <label style="display:block; font-size:12px; font-weight:600; color:#8A8580; margin-bottom:6px; text-transform:uppercase;">Price (SAR)</label>
+                <input asp-for="Price" type="number" style="width:100%; padding:10px 14px; border:1px solid #EFEDE9; border-radius:8px; font-size:14px;" required />
+            </div>
+
+            <div>
+                <label style="display:block; font-size:12px; font-weight:600; color:#8A8580; margin-bottom:6px; text-transform:uppercase;">City</label>
+                <input asp-for="City" type="text" style="width:100%; padding:10px 14px; border:1px solid #EFEDE9; border-radius:8px; font-size:14px;" required />
+            </div>
+
+            <div>
+                <label style="display:block; font-size:12px; font-weight:600; color:#8A8580; margin-bottom:6px; text-transform:uppercase;">Bedrooms</label>
+                <input asp-for="Bedrooms" type="number" style="width:100%; padding:10px 14px; border:1px solid #EFEDE9; border-radius:8px; font-size:14px;" required />
+            </div>
+
+            <div>
+                <label style="display:block; font-size:12px; font-weight:600; color:#8A8580; margin-bottom:6px; text-transform:uppercase;">Bathrooms</label>
+                <input asp-for="Bathrooms" type="number" style="width:100%; padding:10px 14px; border:1px solid #EFEDE9; border-radius:8px; font-size:14px;" required />
+            </div>
+
+            <div>
+                <label style="display:block; font-size:12px; font-weight:600; color:#8A8580; margin-bottom:6px; text-transform:uppercase;">Area (m²)</label>
+                <input asp-for="Area" type="number" step="0.01" style="width:100%; padding:10px 14px; border:1px solid #EFEDE9; border-radius:8px; font-size:14px;" required />
+            </div>
+
+            <div>
+                <label style="display:block; font-size:12px; font-weight:600; color:#8A8580; margin-bottom:6px; text-transform:uppercase;">Status</label>
+                <select asp-for="Status" style="width:100%; padding:10px 14px; border:1px solid #EFEDE9; border-radius:8px; font-size:14px;">
+                    <option value="0">Pending</option>
+                    <option value="1">Approved</option>
+                    <option value="2">Rejected</option>
+                </select>
+            </div>
+
+            <div style="grid-column:span 2;">
+                <label style="display:block; font-size:12px; font-weight:600; color:#8A8580; margin-bottom:6px; text-transform:uppercase;">Description</label>
+                <textarea asp-for="Description" rows="5" style="width:100%; padding:10px 14px; border:1px solid #EFEDE9; border-radius:8px; font-size:14px;" required></textarea>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:16px;">
+            <button type="submit" class="btn btn-maroon" style="padding:12px 28px;">Update Property</button>
+            <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Index" class="btn btn-ghost" style="padding:12px 24px;">Cancel</a>
+        </div>
+    </form>
+</div>
