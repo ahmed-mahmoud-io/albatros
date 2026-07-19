@@ -1,0 +1,40 @@
+@{ ViewData["Title"] = "Contact"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Get in Touch</h2>
+<p class="text-muted">Whether you're buying, selling or investing — our advisors respond within one business day.</p>
+
+<div class="row mt-4">
+    <div class="col-md-7">
+        <div class="alert alert-warning small">
+            Note: this form doesn't save anywhere yet -- there's no ContactMessage table in the database.
+            The quickest real fix is to point this at <code>VisitRequestsController</code> for a specific
+            property, or add a small ContactMessage model + migration if you want general inquiries stored too.
+        </div>
+        <form onsubmit="alert('This form is not yet connected to the database.'); return false;">
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Message</label>
+                <textarea class="form-control" rows="5"></textarea>
+            </div>
+            <button type="submit" class="btn text-white" style="background:#9C2A2A;">Send Message</button>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Office Information</h5>
+                <p class="mb-1">📍 King Fahd Road, Riyadh, Saudi Arabia</p>
+                <p class="mb-1">📞 +966 11 234 5678</p>
+                <p class="mb-1">✉️ hello@albatros.sa</p>
+                <p class="mb-0">🕐 Sunday – Thursday, 9:00 AM – 6:00 PM</p>
+            </div>
+        </div>
+    </div>
+</div>

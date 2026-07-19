@@ -1,0 +1,132 @@
+@{
+    ViewData["Title"] = "Executive Dashboard";
+    var recentProps = ViewBag.RecentProperties as List<Albatros.Models.Property> ?? new List<Albatros.Models.Property>();
+    var recentReqs = ViewBag.RecentRequests as List<Albatros.Models.VisitRequest> ?? new List<Albatros.Models.VisitRequest>();
+}
+
+<!-- STATS ROW 1 -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 24px;">
+    <div class="admin-card" style="margin-bottom:0; display:flex; align-items:center; gap:20px;">
+        <div style="width:54px; height:54px; border-radius:12px; background:rgba(156,42,42,0.1); color:#9C2A2A; display:flex; align-items:center; justify-content:center; font-size:24px;">🏢</div>
+        <div>
+            <div style="font-size:26px; font-weight:700;">@(ViewBag.PropertiesCount ?? 0)</div>
+            <div style="font-size:13px; color:#8A8580; font-weight:500;">Total Properties</div>
+        </div>
+    </div>
+
+    <div class="admin-card" style="margin-bottom:0; display:flex; align-items:center; gap:20px;">
+        <div style="width:54px; height:54px; border-radius:12px; background:rgba(245,127,23,0.1); color:#F57F17; display:flex; align-items:center; justify-content:center; font-size:24px;">⏳</div>
+        <div>
+            <div style="font-size:26px; font-weight:700;">@(ViewBag.PendingProperties ?? 0)</div>
+            <div style="font-size:13px; color:#8A8580; font-weight:500;">Pending Listings</div>
+        </div>
+    </div>
+
+    <div class="admin-card" style="margin-bottom:0; display:flex; align-items:center; gap:20px;">
+        <div style="width:54px; height:54px; border-radius:12px; background:rgba(46,125,50,0.1); color:#2E7D32; display:flex; align-items:center; justify-content:center; font-size:24px;">👥</div>
+        <div>
+            <div style="font-size:26px; font-weight:700;">@(ViewBag.UsersCount ?? 0)</div>
+            <div style="font-size:13px; color:#8A8580; font-weight:500;">Registered Users</div>
+        </div>
+    </div>
+
+    <div class="admin-card" style="margin-bottom:0; display:flex; align-items:center; gap:20px;">
+        <div style="width:54px; height:54px; border-radius:12px; background:rgba(25,118,210,0.1); color:#1976D2; display:flex; align-items:center; justify-content:center; font-size:24px;">🗓️</div>
+        <div>
+            <div style="font-size:26px; font-weight:700;">@(ViewBag.VisitRequestsCount ?? 0)</div>
+            <div style="font-size:13px; color:#8A8580; font-weight:500;">Visit Requests</div>
+        </div>
+    </div>
+</div>
+
+<!-- STATS ROW 2 -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px;">
+    <div class="admin-card" style="margin-bottom:0; display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:14px; color:#8A8580;">Pending Tours</span>
+        <strong style="font-size:20px; color:#F57F17;">@(ViewBag.PendingVisits ?? 0)</strong>
+    </div>
+    <div class="admin-card" style="margin-bottom:0; display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:14px; color:#8A8580;">Total Reviews</span>
+        <strong style="font-size:20px;">@(ViewBag.ReviewsCount ?? 0)</strong>
+    </div>
+    <div class="admin-card" style="margin-bottom:0; display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:14px; color:#8A8580;">Saved Favorites</span>
+        <strong style="font-size:20px;">@(ViewBag.FavoritesCount ?? 0)</strong>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px;">
+    <!-- RECENT PROPERTIES -->
+    <div class="admin-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 style="font-size:18px;">Recent Property Listings</h3>
+            <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Index" style="font-size:13px; color:#9C2A2A; font-weight:600; text-decoration:none;">Manage All →</a>
+        </div>
+
+        @if (recentProps.Any())
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>City</th>
+                        <th>Status</th>
+                        <th style="text-align:right;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in recentProps)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Details" asp-route-id="@p.PropertyId" style="font-weight:600; color:inherit; text-decoration:none;">@p.Title</a>
+                            </td>
+                            <td>@p.City</td>
+                            <td><span class="status-badge status-@p.Status">@p.Status</span></td>
+                            <td style="text-align:right; font-weight:600; color:#9C2A2A;">@p.Price.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p style="color:#8A8580; font-size:14px; padding:20px 0; text-align:center;">No properties listed yet.</p>
+        }
+    </div>
+
+    <!-- RECENT VISIT REQUESTS -->
+    <div class="admin-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 style="font-size:18px;">Recent Tour Bookings</h3>
+            <a asp-area="Admin" asp-controller="VisitRequests" asp-action="Index" style="font-size:13px; color:#9C2A2A; font-weight:600; text-decoration:none;">View All →</a>
+        </div>
+
+        @if (recentReqs.Any())
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in recentReqs)
+                    {
+                        <tr>
+                            <td style="font-weight:600;">@(r.Property?.Title ?? "Property #" + r.PropertyId)</td>
+                            <td style="font-size:13px; color:#8A8580;">@r.VisitDate.ToString("MMM dd - HH:mm")</td>
+                            <td><span class="status-badge status-@r.Status">@r.Status</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p style="color:#8A8580; font-size:14px; padding:20px 0; text-align:center;">No visit requests booked yet.</p>
+        }
+    </div>
+</div>

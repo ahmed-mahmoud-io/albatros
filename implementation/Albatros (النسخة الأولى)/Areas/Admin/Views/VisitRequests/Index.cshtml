@@ -1,0 +1,46 @@
+@model IEnumerable<Albatros.Models.VisitRequest>
+@{
+    ViewData["Title"] = "Manage Visit Requests";
+}
+
+<div class="admin-card">
+    <h2 style="font-size:20px; margin-bottom:24px;">Property Tour Bookings Moderation</h2>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Property</th>
+                    <th>Requested Time</th>
+                    <th>Status</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var v in Model)
+                {
+                    <tr>
+                        <td style="color:#8A8580; font-size:13px;">#@v.RequestId</td>
+                        <td style="font-weight:600;">@(v.User?.FullName ?? "N/A")</td>
+                        <td>
+                            <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Details" asp-route-id="@v.PropertyId" style="color:inherit; text-decoration:none; font-weight:500;">@(v.Property?.Title ?? "Property #" + v.PropertyId)</a>
+                        </td>
+                        <td style="font-weight:500;">📅 @v.VisitDate.ToString("MMM dd, yyyy - HH:mm")</td>
+                        <td><span class="status-badge status-@v.Status">@v.Status</span></td>
+                        <td style="text-align:right;">
+                            <a asp-area="Admin" asp-controller="VisitRequests" asp-action="Details" asp-route-id="@v.RequestId" class="btn btn-ghost" style="padding:6px 12px; font-size:12px; text-decoration:none;">Details</a>
+                            <a asp-area="Admin" asp-controller="VisitRequests" asp-action="Delete" asp-route-id="@v.RequestId" class="btn" style="padding:6px 12px; font-size:12px; background:#FFEBEE; color:#C62828; text-decoration:none;">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p style="padding:40px; text-align:center; color:#8A8580;">No visit requests found in the database.</p>
+    }
+</div>

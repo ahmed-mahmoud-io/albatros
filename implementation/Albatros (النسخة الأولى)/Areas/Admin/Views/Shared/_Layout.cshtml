@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ALBATROS Admin Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Cairo', sans-serif; }
+        body { background: #F5F6FA; color: #0A0A0A; min-height: 100vh; }
+        .admin-wrapper { display: flex; min-height: 100vh; }
+        .admin-sidebar {
+            width: 260px;
+            background: #0A0A0A;
+            color: white;
+            padding: 28px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 100;
+        }
+        .admin-sidebar .logo { font-size: 20px; font-weight: 700; letter-spacing: 2px; margin-bottom: 40px; color: white; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .admin-sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #8C8985; font-size: 14px; border-radius: 8px; margin-bottom: 6px; text-decoration: none; font-weight: 500; transition: all 0.2s; }
+        .admin-sidebar nav a:hover, .admin-sidebar nav a.active { background: #1C1C1C; color: white; }
+        .admin-main { margin-left: 260px; flex: 1; padding: 32px 40px; min-height: 100vh; }
+        .admin-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; background: white; padding: 20px 28px; border-radius: 12px; border: 1px solid #EFEDE9; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .admin-topbar h1 { font-size: 24px; font-weight: 700; }
+        .admin-card { background: white; border-radius: 12px; padding: 24px; border: 1px solid #EFEDE9; box-shadow: 0 2px 12px rgba(0,0,0,0.03); margin-bottom: 24px; }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th { background: #F5F6FA; padding: 14px; text-align: left; font-size: 12px; font-weight: 600; color: #8A8580; text-transform: uppercase; border-bottom: 1px solid #EFEDE9; }
+        .admin-table td { padding: 16px 14px; border-bottom: 1px solid #EFEDE9; font-size: 14px; vertical-align: middle; }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-Pending { background: #FFF8E1; color: #F57F17; }
+        .status-Approved { background: #E8F5E9; color: #2E7D32; }
+        .status-Rejected { background: #FFEBEE; color: #C62828; }
+        @@media (max-width: 900px) {
+            .admin-sidebar { width: 70px; padding: 20px 10px; }
+            .admin-sidebar span { display: none; }
+            .admin-main { margin-left: 70px; padding: 20px; }
+        }
+    </style>
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- SIDEBAR -->
+        <div class="admin-sidebar">
+            <div>
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="logo">
+                    <svg viewBox="0 0 48 48" width="28" height="28"><path d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="rgba(255,255,255,0.9)"/><path d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="rgba(255,255,255,0.9)"/><path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="rgba(255,255,255,0.6)"/></svg>
+                    <span>ALBATROS</span>
+                </a>
+
+                <nav>
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                        <span>📊</span> <span>Dashboard</span>
+                    </a>
+                    <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Index">
+                        <span>🏢</span> <span>Properties</span>
+                    </a>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Index">
+                        <span>👥</span> <span>Users</span>
+                    </a>
+                    <a asp-area="Admin" asp-controller="Reviews" asp-action="Index">
+                        <span>⭐</span> <span>Reviews</span>
+                    </a>
+                    <a asp-area="Admin" asp-controller="VisitRequests" asp-action="Index">
+                        <span>🗓️</span> <span>Visit Requests</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div>
+                <nav>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" style="color: #4CAF50;">
+                        <span>🌐</span> <span>Live Site</span>
+                    </a>
+                    <a asp-area="" asp-controller="Account" asp-action="Logout" style="color: #FF5252;">
+                        <span>🚪</span> <span>Sign Out</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- MAIN AREA -->
+        <div class="admin-main">
+            <div class="admin-topbar">
+                <div>
+                    <h1>@ViewData["Title"]</h1>
+                    <div style="font-size: 13px; color: #8A8580;">ALBATROS Executive Management Portal</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="text-align: right;">
+                        <div style="font-weight: 600; font-size: 14px;">@(Context.Session.GetString("UserName") ?? "System Administrator")</div>
+                        <div style="font-size: 12px; color: #9C2A2A; font-weight: 600;">Super Admin</div>
+                    </div>
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #9C2A2A; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">A</div>
+                </div>
+            </div>
+
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/js/i18n.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+@section Styles {
+<style>
+    .contact-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; margin: 40px 0 60px; }
+    .contact-card { background: white; border-radius: 16px; padding: 40px; border: 1px solid #EFEDE9; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+    .info-card { background: var(--black); color: white; border-radius: 16px; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; }
+    .field { margin-bottom: 20px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: #5A5A5A; margin-bottom: 8px; text-transform: uppercase; }
+    .field input, .field textarea { width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--gray-mid); background: var(--gray-bg); font-size: 14px; }
+    .field input:focus, .field textarea:focus { border-color: var(--maroon); background: white; outline: none; }
+    @@media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; } }
+</style>
+}
+
+<div class="wrap">
+    <div style="margin-top: 40px;">
+        <div class="eyebrow" data-i18n="contact_eyebrow">GET IN TOUCH</div>
+        <h1 style="font-size: 36px; font-family: 'Playfair Display', serif;" data-i18n="contact_title">Connect With Our Advisory Team</h1>
+    </div>
+
+    <div class="contact-grid">
+        <div class="contact-card">
+            <h3 style="font-size: 22px; margin-bottom: 24px;" data-i18n="send_msg">Send Us a Message</h3>
+            <form onsubmit="alert('Message sent successfully! Our advisor will contact you shortly.'); return false;">
+                <div class="field">
+                    <label data-i18n="full_name">Full Name</label>
+                    <input type="text" placeholder="John Doe" required />
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div class="field">
+                        <label data-i18n="email">Email Address</label>
+                        <input type="email" placeholder="name@example.com" required />
+                    </div>
+                    <div class="field">
+                        <label data-i18n="phone">Phone Number</label>
+                        <input type="tel" placeholder="+966 50 123 4567" required />
+                    </div>
+                </div>
+                <div class="field">
+                    <label data-i18n="subject">Subject</label>
+                    <input type="text" placeholder="Inquiry about property viewing..." required />
+                </div>
+                <div class="field">
+                    <label data-i18n="message">Message</label>
+                    <textarea rows="4" placeholder="How can we assist your real estate journey?" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-maroon" style="width:100%; padding:14px;" data-i18n="btn_submit">Submit Inquiry</button>
+            </form>
+        </div>
+
+        <div class="info-card">
+            <div>
+                <h3 style="font-size: 24px; margin-bottom: 24px; font-family: 'Playfair Display', serif;" data-i18n="office_info">Headquarters</h3>
+                <div style="margin-bottom: 24px; opacity: 0.85; line-height: 1.7;">
+                    <strong style="color: white;">ALBATROS Real Estate Tower</strong><br />
+                    King Fahd Road, Olaya District<br />
+                    Riyadh 12214, Saudi Arabia
+                </div>
+                <div style="margin-bottom: 24px; opacity: 0.85; line-height: 1.7;">
+                    <strong>Email:</strong> contact@albatros.sa<br />
+                    <strong>Phone:</strong> +966 11 400 0000<br />
+                    <strong>Hours:</strong> Sun - Thu, 9:00 AM - 6:00 PM
+                </div>
+            </div>
+            <div style="padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 13px; opacity: 0.7;">
+                Our dedicated client relations team responds to all inquiries within 24 business hours.
+            </div>
+        </div>
+    </div>
+</div>

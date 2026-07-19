@@ -1,0 +1,162 @@
+@model IEnumerable<Albatros.Models.Property>
+@{
+    ViewData["Title"] = "Properties";
+    var cities = ViewBag.Cities as List<string> ?? new List<string>();
+    var currentType = ViewBag.CurrentListingType as string ?? "all";
+}
+
+@section Styles {
+<style>
+    .listing-tabs {
+        display: flex;
+        gap: 8px;
+        margin: 20px 0 0;
+    }
+    .listing-tabs a {
+        padding: 8px 24px;
+        border-radius: 20px;
+        border: 1px solid var(--gray-mid);
+        background: white;
+        font-size: 14px;
+        font-weight: 600;
+        color: #5A5A5A;
+        text-decoration: none;
+        transition: all .2s;
+    }
+    .listing-tabs a.active {
+        background: var(--maroon);
+        color: white;
+        border-color: var(--maroon);
+    }
+    .listing-tabs a:hover:not(.active) {
+        border-color: var(--maroon);
+        color: var(--maroon);
+    }
+</style>
+<style>
+    .filter-box {
+        background: white;
+        border-radius: 16px;
+        padding: 24px 32px;
+        border: 1px solid #EFEDE9;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        margin: 30px 0 40px;
+    }
+    .filter-grid {
+        display: grid;
+        grid-template-columns: 2fr 1.2fr 1fr 1fr 1fr auto;
+        gap: 16px;
+        align-items: end;
+    }
+    .filter-field label {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: #5A5A5A;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+    }
+    .filter-field input, .filter-field select {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--gray-mid);
+        background: var(--gray-bg);
+        font-size: 14px;
+    }
+    .filter-field input:focus, .filter-field select:focus {
+        border-color: var(--maroon);
+        background: white;
+        outline: none;
+    }
+    @@media (max-width: 1024px) {
+        .filter-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @@media (max-width: 600px) {
+        .filter-grid { grid-template-columns: 1fr; }
+    }
+</style>
+}
+
+<div class="wrap" style="padding: 40px 0;">
+    <div>
+        <div class="eyebrow" data-i18n="prop_eyebrow">EXCLUSIVE LISTINGS</div>
+        <h1 style="font-size: 36px; font-family: 'Playfair Display', serif;" data-i18n="prop_title">Available Properties</h1>
+        <div class="listing-tabs">
+            <a asp-controller="Properties" asp-action="Index" asp-route-listingType="all" class="@(currentType == "all" ? "active" : "")">All</a>
+            <a asp-controller="Properties" asp-action="Index" asp-route-listingType="sale" class="@(currentType == "sale" ? "active" : "")">For Sale</a>
+            <a asp-controller="Properties" asp-action="Index" asp-route-listingType="rent" class="@(currentType == "rent" ? "active" : "")">For Rent</a>
+        </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-box">
+        <form asp-controller="Properties" asp-action="Index" method="get">
+            <div class="filter-grid">
+                <div class="filter-field">
+                    <label data-i18n="search_kw">Keyword Search</label>
+                    <input type="text" name="search" value="@ViewBag.CurrentSearch" placeholder="Title, neighborhood, landmarks..." />
+                </div>
+
+                <div class="filter-field">
+                    <label data-i18n="city">City</label>
+                    <select name="city">
+                        <option value="" data-i18n="all_cities">All Cities</option>
+                        @foreach (var c in cities)
+                        {
+                            <option value="@c" selected="@(ViewBag.CurrentCity == c)">@c</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filter-field">
+                    <label data-i18n="min_price">Min Price (SAR)</label>
+                    <input type="number" name="minPrice" value="@ViewBag.CurrentMinPrice" placeholder="0" />
+                </div>
+
+                <div class="filter-field">
+                    <label data-i18n="max_price">Max Price (SAR)</label>
+                    <input type="number" name="maxPrice" value="@ViewBag.CurrentMaxPrice" placeholder="Any" />
+                </div>
+
+                <div class="filter-field">
+                    <label data-i18n="bedrooms">Bedrooms</label>
+                    <select name="bedrooms">
+                        <option value="">Any</option>
+                        @for (int i = 1; i <= 6; i++)
+                        {
+                            <option value="@i" selected="@(ViewBag.CurrentBedrooms == i)">@i+ Beds</option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-maroon" style="padding: 10px 24px; width: 100%;" data-i18n="filter_btn">Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- PROPERTIES GRID -->
+    <div class="cards-strip">
+        <div class="cards-row">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var property in Model)
+                {
+                    @await Html.PartialAsync("_PropertyCard", property)
+                }
+            }
+            else
+            {
+                <div style="padding: 60px 20px; text-align: center; background: white; border-radius: 16px; border: 1px solid #EFEDE9; width: 100%;">
+                    <div style="font-size: 40px; margin-bottom: 12px;">🏡</div>
+                    <h3 style="font-size: 20px; margin-bottom: 8px;" data-i18n="no_matching">No matching properties found</h3>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;" data-i18n="try_reset">Try adjusting your search filters or clearing the search parameters.</p>
+                    <a asp-controller="Properties" asp-action="Index" class="btn btn-ghost" data-i18n="clear_filters">Clear Filters</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

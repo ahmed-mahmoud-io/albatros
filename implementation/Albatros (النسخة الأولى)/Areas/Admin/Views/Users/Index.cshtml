@@ -1,0 +1,46 @@
+@model IEnumerable<Albatros.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<div class="admin-card">
+    <h2 style="font-size:20px; margin-bottom:24px;">Registered Users Database</h2>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email Address</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td style="color:#8A8580; font-size:13px;">#@user.UserId</td>
+                        <td style="font-weight:600;">@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td>@(user.PhoneNumber ?? "N/A")</td>
+                        <td>
+                            <span style="padding:4px 10px; border-radius:12px; font-size:12px; font-weight:600; background:@(user.Role == "Admin" ? "#FFEBEE" : "#E8F5E9"); color:@(user.Role == "Admin" ? "#C62828" : "#2E7D32");">@user.Role</span>
+                        </td>
+                        <td style="text-align:right;">
+                            <a asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@user.UserId" class="btn btn-ghost" style="padding:6px 12px; font-size:12px; text-decoration:none;">Details</a>
+                            <a asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@user.UserId" class="btn" style="padding:6px 12px; font-size:12px; background:#FFEBEE; color:#C62828; text-decoration:none;">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p style="padding:40px; text-align:center; color:#8A8580;">No users found in the database.</p>
+    }
+</div>

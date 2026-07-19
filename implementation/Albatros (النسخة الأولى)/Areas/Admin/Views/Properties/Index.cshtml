@@ -1,0 +1,50 @@
+@model IEnumerable<Albatros.Models.Property>
+@{
+    ViewData["Title"] = "Manage Properties";
+}
+
+<div class="admin-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <h2 style="font-size:20px;">Property Listings Management</h2>
+        <a asp-area="" asp-controller="Properties" asp-action="Create" class="btn btn-maroon" style="padding:10px 20px; font-size:14px; text-decoration:none;">+ Create New Listing</a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Property Title</th>
+                    <th>Listed By</th>
+                    <th>City</th>
+                    <th>Price (SAR)</th>
+                    <th>Status</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="color:#8A8580; font-size:13px;">#@item.PropertyId</td>
+                        <td style="font-weight:600;">@item.Title</td>
+                        <td>@(item.User?.FullName ?? "N/A")</td>
+                        <td>@item.City</td>
+                        <td style="font-weight:600; color:#9C2A2A;">@item.Price.ToString("N0")</td>
+                        <td><span class="status-badge status-@item.Status">@item.Status</span></td>
+                        <td style="text-align:right;">
+                            <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Details" asp-route-id="@item.PropertyId" class="btn btn-ghost" style="padding:6px 12px; font-size:12px; text-decoration:none;">Details</a>
+                            <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Edit" asp-route-id="@item.PropertyId" class="btn btn-ghost" style="padding:6px 12px; font-size:12px; text-decoration:none;">Edit</a>
+                            <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Delete" asp-route-id="@item.PropertyId" class="btn" style="padding:6px 12px; font-size:12px; background:#FFEBEE; color:#C62828; text-decoration:none;">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p style="padding:40px; text-align:center; color:#8A8580;">No properties registered in the database.</p>
+    }
+</div>

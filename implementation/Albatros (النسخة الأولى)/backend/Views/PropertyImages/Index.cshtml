@@ -1,0 +1,22 @@
+@model IEnumerable<Albatros.Models.PropertyImage>
+@{ ViewData["Title"] = "Property Images"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Property Images</h2>
+
+<div class="row g-3 mt-2">
+    @foreach (var img in Model)
+    {
+        <div class="col-md-3">
+            <div class="card">
+                <img src="@img.ImageUrl" class="card-img-top" style="height:140px;object-fit:cover;" />
+                <div class="card-body d-flex justify-content-between">
+                    <a href="/PropertyImages/Edit/@img.ImageId" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a href="/PropertyImages/Delete/@img.ImageId" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<a href="/PropertyImages/Create?propertyId=@ViewBag.PropertyId" class="btn text-white mt-3" style="background:#9C2A2A;">+ Add Image</a>
+<a href="/Properties/Details/@ViewBag.PropertyId" class="btn btn-outline-secondary mt-3">Back to Property</a>

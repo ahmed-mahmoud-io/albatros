@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al Narjis Villa Residence | ALBATROS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon:#9C2A2A; --maroon-dark:#7A2020; --black:#0A0A0A; --white:#FFFFFF;
+    --gray-bg:#F8F8F8; --gray-mid:#E4E1DC; --text-muted:#8A8580;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--white);color:var(--black);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.display{font-family:'Playfair Display',serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+
+  header{background:var(--black);position:sticky;top:0;z-index:50;border-bottom:1px solid #1c1c1c;}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;height:78px;}
+  .logo{color:var(--white);font-size:22px;font-weight:700;letter-spacing:2px;display:flex;align-items:center;gap:10px;}
+    .logo-mark{
+    width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;cursor:pointer;
+  }
+  .logo-mark svg{overflow:visible;display:block;}
+  .logo-mark .wing{transform-origin:24px 24px;transform-box:fill-box;animation:wingFlap 1.5s ease-in-out both;}
+  .logo-mark .wing-r{animation-name:wingFlapR;}
+  .logo-mark .bird-fly{transform-origin:24px 24px;animation:flyIn 1.5s cubic-bezier(.3,1.15,.6,1) both;}
+  .logo-mark:hover .bird-fly, .logo-mark.replay .bird-fly{animation-play-state:running;}
+  @keyframes flyIn{
+    0%{transform:translate(120px,-70px) rotate(28deg) scale(.5);opacity:0;}
+    18%{opacity:1;}
+    55%{transform:translate(-14px,10px) rotate(-8deg) scale(1.08);}
+    78%{transform:translate(4px,-3px) rotate(4deg) scale(.97);}
+    100%{transform:translate(0,0) rotate(0deg) scale(1);}
+  }
+  @keyframes wingFlap{
+    0%{transform:scaleY(1);}
+    20%{transform:scaleY(.35);}
+    40%{transform:scaleY(1);}
+    60%{transform:scaleY(.35);}
+    80%{transform:scaleY(.9);}
+    100%{transform:scaleY(.2);}
+  }
+  @keyframes wingFlapR{
+    0%{transform:scaleY(1);}
+    20%{transform:scaleY(.35);}
+    40%{transform:scaleY(1);}
+    60%{transform:scaleY(.35);}
+    80%{transform:scaleY(.9);}
+    100%{transform:scaleY(.2);}
+  }
+  nav{display:flex;gap:38px;}
+  nav a{color:#C9C6C1;font-size:14.5px;font-weight:500;transition:color .2s;}
+  nav a:hover{color:var(--white);}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .btn{font-size:13.5px;font-weight:600;padding:10px 20px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .2s;white-space:nowrap;}
+  .btn-ghost{background:#1C1C1C;color:#E8E6E3;border:1px solid #313131;}
+  .btn-ghost:hover{background:#262626;}
+  .btn-maroon{background:var(--maroon);color:var(--white);}
+  .btn-maroon:hover{background:var(--maroon-dark);}
+  .btn-outline-black{background:transparent;border:1.5px solid var(--black);color:var(--black);}
+  .btn-outline-black:hover{background:var(--black);color:var(--white);}
+  .btn-full{width:100%;text-align:center;}
+  .lang{display:flex;align-items:center;gap:6px;color:#C9C6C1;font-size:13.5px;font-weight:500;padding:8px 12px;border-radius:6px;cursor:pointer;border:1px solid #313131;}
+  .lang:hover{background:#1C1C1C;}
+
+  .page-head{background:var(--gray-bg);padding:36px 0;}
+  .breadcrumb{font-size:13px;color:var(--text-muted);}
+  .breadcrumb a{color:var(--text-muted);}
+  .breadcrumb a:hover{color:var(--maroon);}
+
+  /* gallery */
+  .gallery{padding:36px 0 0;}
+  .gallery-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;height:440px;}
+  .gallery-grid > div{border-radius:14px;background-size:cover;background-position:center;}
+  .g-sub{display:grid;grid-template-rows:1fr 1fr;gap:14px;}
+
+  /* main content */
+  .details-layout{display:grid;grid-template-columns:1.65fr 1fr;gap:48px;padding:44px 0 90px;align-items:start;}
+
+  .d-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:12px;}
+  .d-title{font-size:30px;font-weight:700;margin-bottom:8px;}
+  .d-loc{color:var(--text-muted);font-size:14.5px;}
+  .d-price{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--maroon);white-space:nowrap;}
+  .d-price span{font-size:14px;color:var(--text-muted);font-weight:500;font-family:'Inter',sans-serif;}
+
+  .spec-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;background:var(--gray-bg);border-radius:14px;padding:22px 24px;margin:28px 0 36px;}
+  .spec-item{text-align:center;}
+  .spec-item .num{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--black);margin-bottom:4px;}
+  .spec-item .label{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;}
+  .spec-divider{border-inline-start:1px solid var(--gray-mid);}
+
+  .block-h{font-size:20px;font-weight:700;margin-bottom:14px;}
+  .d-desc{color:#4A4A4A;font-size:14.8px;line-height:1.8;margin-bottom:40px;}
+
+  .amenities{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin-bottom:20px;}
+  .amenity{display:flex;align-items:center;gap:10px;font-size:14px;color:#333;}
+  .amenity svg{flex-shrink:0;}
+
+  /* sidebar */
+  .agent-card{background:var(--gray-bg);border:1px solid var(--gray-mid);border-radius:16px;padding:28px;position:sticky;top:100px;}
+  .agent-top{display:flex;gap:14px;align-items:center;margin-bottom:22px;}
+  .agent-avatar{width:56px;height:56px;border-radius:50%;background:var(--maroon);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;}
+  .agent-name{font-size:16px;font-weight:700;}
+  .agent-role{font-size:12.5px;color:var(--text-muted);}
+  .agent-contact{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;font-size:13.5px;color:#4A4A4A;}
+
+  .related{padding:0 0 90px;}
+  .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px;}
+  .p-card{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 12px 30px -18px rgba(0,0,0,0.15);border:1px solid #EFEDE9;transition:transform .25s ease, box-shadow .25s ease;}
+  .p-card:hover{transform:translateY(-5px);}
+  .p-img{height:170px;background-size:cover;background-position:center;position:relative;}
+  .p-tag{position:absolute;inset-inline-start:14px;top:14px;background:var(--black);color:var(--white);font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;}
+  .p-body{padding:18px 20px 20px;}
+  .p-price2{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--maroon);margin-bottom:6px;}
+  .p-price2 span{font-size:12.5px;color:var(--text-muted);font-weight:500;font-family:'Inter',sans-serif;}
+  .p-title{font-size:15px;font-weight:600;margin-bottom:4px;}
+  .p-loc2{font-size:12.5px;color:var(--text-muted);margin-bottom:14px;}
+  .p-btn{display:block;text-align:center;background:var(--maroon);color:var(--white);font-size:13px;font-weight:600;padding:10px;border-radius:7px;margin-top:14px;}
+  .p-btn:hover{background:var(--maroon-dark);}
+
+  footer{background:var(--black);padding:70px 0 28px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:40px;padding-bottom:50px;border-bottom:1px solid #1D1D1D;}
+  .foot-logo{color:var(--white);font-size:20px;font-weight:700;letter-spacing:2px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .foot-desc{color:#8C8985;font-size:13.5px;line-height:1.7;max-width:280px;}
+  .foot-col h4{color:var(--white);font-size:13.5px;font-weight:600;margin-bottom:18px;letter-spacing:.5px;text-transform:uppercase;}
+  .foot-col a{display:block;color:#8C8985;font-size:13.8px;margin-bottom:12px;}
+  .foot-col a:hover{color:var(--white);}
+  .foot-contact-item{display:flex;gap:10px;color:#8C8985;font-size:13.5px;margin-bottom:14px;line-height:1.5;}
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;color:#65625E;font-size:12.5px;}
+  .foot-social{display:flex;gap:10px;}
+  .foot-social a{width:34px;height:34px;border-radius:50%;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#8C8985;}
+  .foot-social a:hover{border-color:var(--maroon);color:var(--white);}
+
+  @media(max-width:980px){
+    .details-layout{grid-template-columns:1fr;}
+    .agent-card{position:static;}
+    .gallery-grid{grid-template-columns:1fr;height:auto;}
+    .g-sub{grid-template-columns:1fr 1fr;grid-template-rows:auto;}
+    .g-sub > div{height:180px;}
+    .gallery-grid > div:first-child{height:260px;}
+    .related-grid{grid-template-columns:1fr 1fr;}
+    .spec-strip{grid-template-columns:1fr 1fr;}
+    nav{display:none;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:640px){ .related-grid{grid-template-columns:1fr;} .amenities{grid-template-columns:1fr;} }
+
+  html[dir="rtl"] body{font-family:'Cairo',sans-serif;}
+  html[dir="rtl"] h1,html[dir="rtl"] h2,html[dir="rtl"] h3,html[dir="rtl"] .d-price,html[dir="rtl"] .spec-item .num,html[dir="rtl"] .p-price2{font-family:'Cairo',sans-serif;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <div class="logo"><span class="logo-mark bird-logo">
+        <svg viewBox="0 0 48 48" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+          <g class="bird-fly">
+            <path class="wing wing-l" d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="#9C2A2A"/>
+            <path class="wing wing-r" d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="#9C2A2A"/>
+            <path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="#7A2020"/>
+          </g>
+        </svg>
+      </span>ALBATROS</div>
+    <nav>
+      <a href="index.html#features" data-i18n="nav_features">Features</a>
+      <a href="properties.html" data-i18n="nav_properties">Properties</a>
+      <a href="favorites.html" data-i18n="nav_favorites">Favorites</a>
+      <a href="contact.html" data-i18n="nav_contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang" id="langToggle" role="button" tabindex="0">
+        <span id="langLabel">EN</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#C9C6C1" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </div>
+      <button class="btn btn-ghost" data-i18n="nav_search">Search now</button>
+      <a href="login.html" class="btn btn-ghost" data-i18n="nav_login">Login</a>
+      <a href="register.html" class="btn btn-maroon" data-i18n="nav_signup">Sign up</a>
+    </div>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="breadcrumb">
+      <a href="index.html" data-i18n="bc_home">Home</a> /
+      <a href="properties.html" data-i18n="bc_properties">Properties</a> /
+      <span data-i18n="prop1_title">Al Narjis Villa Residence</span>
+    </div>
+  </div>
+</div>
+
+<div class="gallery wrap">
+  <div class="gallery-grid">
+    <div style="background-image:url('https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=1200&auto=format&fit=crop');"></div>
+    <div class="g-sub">
+      <div style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop');"></div>
+      <div style="background-image:url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800&auto=format&fit=crop');"></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="details-layout">
+    <div>
+      <div class="d-top">
+        <div>
+          <div class="d-title" data-i18n="prop1_title">Al Narjis Villa Residence</div>
+          <div class="d-loc">📍 <span data-i18n="prop1_loc">Al Narjis, Riyadh</span></div>
+        </div>
+        <div class="d-price">340,000 <span data-i18n="sar">SAR</span></div>
+      </div>
+
+      <div class="spec-strip">
+        <div class="spec-item"><div class="num">4</div><div class="label" data-i18n="d_beds">Bedrooms</div></div>
+        <div class="spec-item spec-divider"><div class="num">3</div><div class="label" data-i18n="d_baths">Bathrooms</div></div>
+        <div class="spec-item spec-divider"><div class="num">380 m²</div><div class="label" data-i18n="d_area">Area</div></div>
+        <div class="spec-item spec-divider"><div class="num">2023</div><div class="label" data-i18n="d_year">Year Built</div></div>
+      </div>
+
+      <div class="block-h" data-i18n="d_desc_h">Description</div>
+      <p class="d-desc" data-i18n="d_desc_p">This exceptional residence blends contemporary architecture with timeless comfort. Featuring expansive living spaces, premium finishes and a private landscaped garden, it offers an elevated lifestyle in one of Riyadh's most desirable neighborhoods — minutes from schools, retail and business districts.</p>
+
+      <div class="block-h" data-i18n="d_amenities_h">Amenities</div>
+      <div class="amenities">
+        <div class="amenity"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#9C2A2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="am1">Private Garden</span></div>
+        <div class="amenity"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#9C2A2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="am2">Covered Parking (2)</span></div>
+        <div class="amenity"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#9C2A2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="am3">Smart Home System</span></div>
+        <div class="amenity"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#9C2A2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="am4">Central A/C</span></div>
+        <div class="amenity"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#9C2A2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="am5">Maid's Room</span></div>
+        <div class="amenity"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#9C2A2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="am6">Security & CCTV</span></div>
+        <div class="amenity"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#9C2A2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="am7">Swimming Pool</span></div>
+        <div class="amenity"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#9C2A2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="am8">Elevator Access</span></div>
+      </div>
+    </div>
+
+    <aside class="agent-card">
+      <div class="agent-top">
+        <div class="agent-avatar">FA</div>
+        <div>
+          <div class="agent-name" data-i18n="d_agent_name">Faisal Al-Otaibi</div>
+          <div class="agent-role" data-i18n="d_agent_role">Senior Property Advisor</div>
+        </div>
+      </div>
+      <div class="agent-contact">
+        <div>📞 +966 55 123 4567</div>
+        <div>✉️ faisal@albatros.sa</div>
+      </div>
+      <button class="btn btn-maroon btn-full" style="margin-bottom:10px;" data-i18n="d_request_viewing">Request a Viewing</button>
+      <button class="btn btn-outline-black btn-full" data-i18n="d_call">Call Agent</button>
+    </aside>
+  </div>
+</div>
+
+<div class="related wrap">
+  <div class="block-h" data-i18n="d_related_h">Similar Properties</div>
+  <div class="related-grid">
+    <div class="p-card">
+      <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=800&auto=format&fit=crop');"><span class="p-tag" data-i18n="tag_rent">For Rent</span></div>
+      <div class="p-body">
+        <div class="p-price2">120,000 <span data-i18n="sar_yr">SAR / yr</span></div>
+        <div class="p-title" data-i18n="prop5_title">King Abdullah Financial Loft</div>
+        <div class="p-loc2" data-i18n="prop5_loc">KAFD, Riyadh</div>
+        <a href="property-details.html?id=5" class="p-btn" data-i18n="view_details">View Details</a>
+      </div>
+    </div>
+    <div class="p-card">
+      <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=800&auto=format&fit=crop');"><span class="p-tag" data-i18n="tag_sale">For Sale</span></div>
+      <div class="p-body">
+        <div class="p-price2">610,000 <span data-i18n="sar">SAR</span></div>
+        <div class="p-title" data-i18n="prop7_title">Al Rabwah Family Home</div>
+        <div class="p-loc2" data-i18n="prop7_loc">Al Rabwah, Riyadh</div>
+        <a href="property-details.html?id=7" class="p-btn" data-i18n="view_details">View Details</a>
+      </div>
+    </div>
+    <div class="p-card">
+      <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&auto=format&fit=crop');"><span class="p-tag" data-i18n="tag_rent">For Rent</span></div>
+      <div class="p-body">
+        <div class="p-price2">95,000 <span data-i18n="sar_yr">SAR / yr</span></div>
+        <div class="p-title" data-i18n="prop9_title">Al Sahafa Corner Villa</div>
+        <div class="p-loc2" data-i18n="prop9_loc">Al Sahafa, Riyadh</div>
+        <a href="property-details.html?id=9" class="p-btn" data-i18n="view_details">View Details</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo"><span class="logo-mark bird-logo">
+        <svg viewBox="0 0 48 48" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+          <g class="bird-fly">
+            <path class="wing wing-l" d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="#9C2A2A"/>
+            <path class="wing wing-r" d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="#9C2A2A"/>
+            <path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="#7A2020"/>
+          </g>
+        </svg>
+      </span>ALBATROS</div>
+        <p class="foot-desc" data-i18n="foot_desc">A premium real estate platform connecting buyers, sellers and investors across Saudi Arabia with verified, high-value properties.</p>
+        <div class="foot-social" style="margin-top:22px;"><a href="#">in</a><a href="#">X</a><a href="#">ig</a></div>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_links">Quick Links</h4>
+        <a href="index.html" data-i18n="foot_home">Home</a>
+        <a href="properties.html" data-i18n="nav_properties">Properties</a>
+        <a href="index.html#features" data-i18n="nav_features">Features</a>
+        <a href="contact.html" data-i18n="nav_contact">Contact</a>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_support">Support</h4>
+        <a href="#" data-i18n="foot_help">Help Center</a>
+        <a href="#" data-i18n="foot_terms">Terms of Service</a>
+        <a href="#" data-i18n="foot_privacy">Privacy Policy</a>
+        <a href="#" data-i18n="foot_faq">FAQs</a>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_contact">Contact</h4>
+        <div class="foot-contact-item">✉️ hello@albatros.sa</div>
+        <div class="foot-contact-item">📞 +966 11 234 5678</div>
+        <div class="foot-contact-item">📍 <span data-i18n="foot_address">King Fahd Road, Riyadh, Saudi Arabia</span></div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span data-i18n="foot_rights">© 2026 ALBATROS. All rights reserved.</span>
+      <span data-i18n="foot_tagline">Designed for the Saudi real estate market</span>
+    </div>
+  </div>
+</footer>
+
+<script src="i18n.js"></script>
+</body>
+</html>

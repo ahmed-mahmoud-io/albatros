@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Favorites | ALBATROS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon:#9C2A2A; --maroon-dark:#7A2020; --black:#0A0A0A; --white:#FFFFFF;
+    --gray-bg:#F8F8F8; --gray-mid:#E4E1DC; --text-muted:#8A8580;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--white);color:var(--black);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.display{font-family:'Playfair Display',serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+
+  header{background:var(--black);position:sticky;top:0;z-index:50;border-bottom:1px solid #1c1c1c;}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;height:78px;}
+  .logo{color:var(--white);font-size:22px;font-weight:700;letter-spacing:2px;display:flex;align-items:center;gap:10px;}
+    .logo-mark{
+    width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;cursor:pointer;
+  }
+  .logo-mark svg{overflow:visible;display:block;}
+  .logo-mark .wing{transform-origin:24px 24px;transform-box:fill-box;animation:wingFlap 1.5s ease-in-out both;}
+  .logo-mark .wing-r{animation-name:wingFlapR;}
+  .logo-mark .bird-fly{transform-origin:24px 24px;animation:flyIn 1.5s cubic-bezier(.3,1.15,.6,1) both;}
+  .logo-mark:hover .bird-fly, .logo-mark.replay .bird-fly{animation-play-state:running;}
+  @keyframes flyIn{
+    0%{transform:translate(120px,-70px) rotate(28deg) scale(.5);opacity:0;}
+    18%{opacity:1;}
+    55%{transform:translate(-14px,10px) rotate(-8deg) scale(1.08);}
+    78%{transform:translate(4px,-3px) rotate(4deg) scale(.97);}
+    100%{transform:translate(0,0) rotate(0deg) scale(1);}
+  }
+  @keyframes wingFlap{
+    0%{transform:scaleY(1);}
+    20%{transform:scaleY(.35);}
+    40%{transform:scaleY(1);}
+    60%{transform:scaleY(.35);}
+    80%{transform:scaleY(.9);}
+    100%{transform:scaleY(.2);}
+  }
+  @keyframes wingFlapR{
+    0%{transform:scaleY(1);}
+    20%{transform:scaleY(.35);}
+    40%{transform:scaleY(1);}
+    60%{transform:scaleY(.35);}
+    80%{transform:scaleY(.9);}
+    100%{transform:scaleY(.2);}
+  }
+  nav{display:flex;gap:38px;}
+  nav a{color:#C9C6C1;font-size:14.5px;font-weight:500;transition:color .2s;}
+  nav a:hover{color:var(--white);}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .btn{font-size:13.5px;font-weight:600;padding:10px 20px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .2s;white-space:nowrap;}
+  .btn-ghost{background:#1C1C1C;color:#E8E6E3;border:1px solid #313131;}
+  .btn-ghost:hover{background:#262626;}
+  .btn-maroon{background:var(--maroon);color:var(--white);}
+  .btn-maroon:hover{background:var(--maroon-dark);}
+  .lang{display:flex;align-items:center;gap:6px;color:#C9C6C1;font-size:13.5px;font-weight:500;padding:8px 12px;border-radius:6px;cursor:pointer;border:1px solid #313131;}
+  .lang:hover{background:#1C1C1C;}
+
+  /* breadcrumb + page head */
+  .page-head{background:var(--gray-bg);padding:44px 0 40px;}
+  .breadcrumb{font-size:13px;color:var(--text-muted);margin-bottom:14px;}
+  .breadcrumb a{color:var(--text-muted);}
+  .breadcrumb a:hover{color:var(--maroon);}
+  .page-head h1{font-size:34px;font-weight:700;margin-bottom:10px;}
+  .page-head p{color:#5A5A5A;font-size:15px;max-width:560px;}
+
+  /* layout */
+  .listing-layout{display:grid;grid-template-columns:280px 1fr;gap:40px;padding:48px 0 90px;align-items:start;}
+
+  /* filters sidebar */
+  .filters{background:var(--gray-bg);border:1px solid var(--gray-mid);border-radius:14px;padding:26px;position:sticky;top:100px;}
+  .filters h3{font-size:15px;font-weight:700;margin-bottom:20px;font-family:'Inter',sans-serif;}
+  .f-group{margin-bottom:20px;}
+  .f-group label{display:block;font-size:12.5px;font-weight:600;color:#5A5A5A;margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px;}
+  .f-group select, .f-group input{
+    width:100%;padding:10px 12px;border-radius:7px;border:1px solid var(--gray-mid);
+    background:var(--white);font-size:13.5px;font-family:'Inter',sans-serif;color:var(--black);
+  }
+  .f-range{display:flex;gap:8px;}
+  .f-actions{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
+  .btn-full{width:100%;text-align:center;}
+  .btn-outline-black{background:transparent;border:1.5px solid var(--black);color:var(--black);}
+  .btn-outline-black:hover{background:var(--black);color:var(--white);}
+
+  /* results */
+  .results-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;flex-wrap:wrap;gap:14px;}
+  .results-count{font-size:13.8px;color:#5A5A5A;}
+  .results-count b{color:var(--black);}
+  .sort-wrap{display:flex;align-items:center;gap:10px;font-size:13.5px;color:#5A5A5A;}
+  .sort-wrap select{padding:9px 12px;border-radius:7px;border:1px solid var(--gray-mid);font-size:13.5px;background:var(--white);}
+
+  .listing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .p-card{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 12px 30px -18px rgba(0,0,0,0.15);border:1px solid #EFEDE9;transition:transform .25s ease, box-shadow .25s ease;}
+  .p-card:hover{transform:translateY(-5px);box-shadow:0 22px 40px -18px rgba(0,0,0,0.22);}
+  .p-img{height:170px;background-size:cover;background-position:center;position:relative;}
+  .p-tag{position:absolute;inset-inline-start:14px;top:14px;background:var(--black);color:var(--white);font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;letter-spacing:.4px;}
+  .p-body{padding:18px 20px 20px;}
+  .p-price{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--maroon);margin-bottom:6px;}
+  .p-price span{font-size:12.5px;color:var(--text-muted);font-weight:500;font-family:'Inter',sans-serif;}
+  .p-title{font-size:15px;font-weight:600;color:var(--black);margin-bottom:4px;}
+  .p-loc{font-size:12.5px;color:var(--text-muted);margin-bottom:14px;}
+  .p-specs{display:flex;gap:12px;padding-top:12px;margin-bottom:16px;border-top:1px solid #F0EEEB;font-size:12px;color:#5A5A5A;font-weight:500;}
+  .p-btn{display:block;text-align:center;background:var(--maroon);color:var(--white);font-size:13px;font-weight:600;padding:10px;border-radius:7px;transition:background .2s;}
+  .p-btn:hover{background:var(--maroon-dark);}
+  .heart-btn{
+    position:absolute;top:14px;inset-inline-end:14px;
+    width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.92);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,0.12);
+  }
+  .heart-btn svg{transition:all .15s;}
+  .heart-btn.active svg{fill:var(--maroon);stroke:var(--maroon);}
+  .p-card.removed{display:none;}
+
+  .empty-state{
+    display:none;flex-direction:column;align-items:center;text-align:center;
+    padding:90px 20px;
+  }
+  .empty-state.show{display:flex;}
+  .empty-state .e-icon{
+    width:74px;height:74px;border-radius:50%;background:var(--gray-bg);
+    display:flex;align-items:center;justify-content:center;margin-bottom:22px;
+  }
+  .empty-state h3{font-size:20px;font-weight:700;margin-bottom:10px;}
+  .empty-state p{color:var(--text-muted);font-size:14px;margin-bottom:26px;max-width:320px;}
+
+  .pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:50px;}
+  .pg-btn{width:38px;height:38px;border-radius:8px;border:1px solid var(--gray-mid);display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:600;cursor:pointer;color:#5A5A5A;}
+  .pg-btn.active{background:var(--maroon);color:var(--white);border-color:var(--maroon);}
+  .pg-btn:hover:not(.active){background:var(--gray-bg);}
+  .pg-nav{padding:0 16px;width:auto;}
+
+  footer{background:var(--black);padding:70px 0 28px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:40px;padding-bottom:50px;border-bottom:1px solid #1D1D1D;}
+  .foot-logo{color:var(--white);font-size:20px;font-weight:700;letter-spacing:2px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .foot-desc{color:#8C8985;font-size:13.5px;line-height:1.7;max-width:280px;}
+  .foot-col h4{color:var(--white);font-size:13.5px;font-weight:600;margin-bottom:18px;letter-spacing:.5px;text-transform:uppercase;}
+  .foot-col a{display:block;color:#8C8985;font-size:13.8px;margin-bottom:12px;transition:color .2s;}
+  .foot-col a:hover{color:var(--white);}
+  .foot-contact-item{display:flex;gap:10px;color:#8C8985;font-size:13.5px;margin-bottom:14px;line-height:1.5;}
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;color:#65625E;font-size:12.5px;}
+  .foot-social{display:flex;gap:10px;}
+  .foot-social a{width:34px;height:34px;border-radius:50%;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#8C8985;}
+  .foot-social a:hover{border-color:var(--maroon);color:var(--white);}
+
+  @media(max-width:980px){
+    .listing-layout{grid-template-columns:1fr;}
+    .filters{position:static;}
+    .listing-grid{grid-template-columns:1fr 1fr;}
+    nav{display:none;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:640px){ .listing-grid{grid-template-columns:1fr;} }
+
+  html[dir="rtl"] body{font-family:'Cairo',sans-serif;}
+  html[dir="rtl"] h1,html[dir="rtl"] h2,html[dir="rtl"] h3,html[dir="rtl"] .p-price{font-family:'Cairo',sans-serif;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <div class="logo"><span class="logo-mark bird-logo">
+        <svg viewBox="0 0 48 48" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+          <g class="bird-fly">
+            <path class="wing wing-l" d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="#9C2A2A"/>
+            <path class="wing wing-r" d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="#9C2A2A"/>
+            <path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="#7A2020"/>
+          </g>
+        </svg>
+      </span>ALBATROS</div>
+    <nav>
+      <a href="index.html#features" data-i18n="nav_features">Features</a>
+      <a href="properties.html" data-i18n="nav_properties">Properties</a>
+      <a href="favorites.html" data-i18n="nav_favorites">Favorites</a>
+      <a href="contact.html" data-i18n="nav_contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang" id="langToggle" role="button" tabindex="0">
+        <span id="langLabel">EN</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#C9C6C1" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </div>
+      <button class="btn btn-ghost" data-i18n="nav_search">Search now</button>
+      <a href="login.html" class="btn btn-ghost" data-i18n="nav_login">Login</a>
+      <a href="register.html" class="btn btn-maroon" data-i18n="nav_signup">Sign up</a>
+    </div>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="index.html" data-i18n="bc_home">Home</a> / <span data-i18n="nav_favorites">Favorites</span></div>
+    <h1 data-i18n="fav_title">My Favorites</h1>
+    <p data-i18n="fav_lead">Properties you've saved for later.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="favGrid" class="listing-grid" style="grid-template-columns:repeat(3,1fr);padding:44px 0 30px;">
+    <div class="p-card" data-fav="1">
+      <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800&auto=format&fit=crop');">
+        <span class="p-tag" data-i18n="tag_sale">For Sale</span>
+        <div class="heart-btn active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C2A2A" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></div>
+      </div>
+      <div class="p-body">
+        <div class="p-price">340,000 <span data-i18n="sar">SAR</span></div>
+        <div class="p-title" data-i18n="prop1_title">Al Narjis Villa Residence</div>
+        <div class="p-loc" data-i18n="prop1_loc">Al Narjis, Riyadh</div>
+        <div class="p-specs"><span data-i18n="beds4">4 Beds</span><span data-i18n="baths3">3 Baths</span><span>380 m²</span></div>
+        <a href="property-details.html?id=1" class="p-btn" data-i18n="view_details">View Details</a>
+      </div>
+    </div>
+    <div class="p-card" data-fav="5">
+      <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=800&auto=format&fit=crop');">
+        <span class="p-tag" data-i18n="tag_rent">For Rent</span>
+        <div class="heart-btn active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C2A2A" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></div>
+      </div>
+      <div class="p-body">
+        <div class="p-price">120,000 <span data-i18n="sar_yr">SAR / yr</span></div>
+        <div class="p-title" data-i18n="prop5_title">King Abdullah Financial Loft</div>
+        <div class="p-loc" data-i18n="prop5_loc">KAFD, Riyadh</div>
+        <div class="p-specs"><span data-i18n="beds3">3 Beds</span><span data-i18n="baths2">2 Baths</span><span>210 m²</span></div>
+        <a href="property-details.html?id=5" class="p-btn" data-i18n="view_details">View Details</a>
+      </div>
+    </div>
+    <div class="p-card" data-fav="6">
+      <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=800&auto=format&fit=crop');">
+        <span class="p-tag" data-i18n="tag_sale">For Sale</span>
+        <div class="heart-btn active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C2A2A" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></div>
+      </div>
+      <div class="p-body">
+        <div class="p-price">3,400,000 <span data-i18n="sar">SAR</span></div>
+        <div class="p-title" data-i18n="prop6_title">Diplomatic Quarter Mansion</div>
+        <div class="p-loc" data-i18n="prop6_loc">Diplomatic Quarter, Riyadh</div>
+        <div class="p-specs"><span data-i18n="beds6">6 Beds</span><span data-i18n="baths5">5 Baths</span><span>890 m²</span></div>
+        <a href="property-details.html?id=6" class="p-btn" data-i18n="view_details">View Details</a>
+      </div>
+    </div>
+    <div class="p-card" data-fav="9">
+      <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&auto=format&fit=crop');">
+        <span class="p-tag" data-i18n="tag_rent">For Rent</span>
+        <div class="heart-btn active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C2A2A" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></div>
+      </div>
+      <div class="p-body">
+        <div class="p-price">95,000 <span data-i18n="sar_yr">SAR / yr</span></div>
+        <div class="p-title" data-i18n="prop9_title">Al Sahafa Corner Villa</div>
+        <div class="p-loc" data-i18n="prop9_loc">Al Sahafa, Riyadh</div>
+        <div class="p-specs"><span data-i18n="beds4">4 Beds</span><span data-i18n="baths3">3 Baths</span><span>360 m²</span></div>
+        <a href="property-details.html?id=9" class="p-btn" data-i18n="view_details">View Details</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" id="favEmpty">
+    <div class="e-icon">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B5AFA8" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
+    </div>
+    <h3 data-i18n="fav_empty_h">No favorites yet</h3>
+    <p data-i18n="fav_empty_p">Tap the heart icon on any property to save it here.</p>
+    <a href="properties.html" class="btn btn-maroon" data-i18n="fav_browse">Browse Properties</a>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('#favGrid .heart-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const card = btn.closest('.p-card');
+      card.classList.add('removed');
+      const remaining = document.querySelectorAll('#favGrid .p-card:not(.removed)').length;
+      if(remaining === 0) document.getElementById('favEmpty').classList.add('show');
+    });
+  });
+</script>
+
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo"><span class="logo-mark bird-logo">
+        <svg viewBox="0 0 48 48" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+          <g class="bird-fly">
+            <path class="wing wing-l" d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="#9C2A2A"/>
+            <path class="wing wing-r" d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="#9C2A2A"/>
+            <path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="#7A2020"/>
+          </g>
+        </svg>
+      </span>ALBATROS</div>
+        <p class="foot-desc" data-i18n="foot_desc">A premium real estate platform connecting buyers, sellers and investors across Saudi Arabia with verified, high-value properties.</p>
+        <div class="foot-social" style="margin-top:22px;"><a href="#">in</a><a href="#">X</a><a href="#">ig</a></div>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_links">Quick Links</h4>
+        <a href="index.html" data-i18n="foot_home">Home</a>
+        <a href="properties.html" data-i18n="nav_properties">Properties</a>
+        <a href="index.html#features" data-i18n="nav_features">Features</a>
+        <a href="contact.html" data-i18n="nav_contact">Contact</a>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_support">Support</h4>
+        <a href="#" data-i18n="foot_help">Help Center</a>
+        <a href="#" data-i18n="foot_terms">Terms of Service</a>
+        <a href="#" data-i18n="foot_privacy">Privacy Policy</a>
+        <a href="#" data-i18n="foot_faq">FAQs</a>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_contact">Contact</h4>
+        <div class="foot-contact-item">✉️ hello@albatros.sa</div>
+        <div class="foot-contact-item">📞 +966 11 234 5678</div>
+        <div class="foot-contact-item">📍 <span data-i18n="foot_address">King Fahd Road, Riyadh, Saudi Arabia</span></div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span data-i18n="foot_rights">© 2026 ALBATROS. All rights reserved.</span>
+      <span data-i18n="foot_tagline">Designed for the Saudi real estate market</span>
+    </div>
+  </div>
+</footer>
+
+<script src="i18n.js"></script>
+</body>
+</html>

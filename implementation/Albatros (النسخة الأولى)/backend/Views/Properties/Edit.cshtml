@@ -1,0 +1,53 @@
+@model Albatros.Models.Property
+@{ ViewData["Title"] = "Edit Property"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Edit Property</h2>
+
+<form asp-controller="Properties" asp-action="Edit" method="post" class="mt-4" style="max-width:640px;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="PropertyId" />
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="CreatedAt" />
+    <input type="hidden" asp-for="Status" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">City</label>
+            <input asp-for="City" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Price (SAR)</label>
+            <input asp-for="Price" type="number" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Bedrooms</label>
+            <input asp-for="Bedrooms" type="number" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Bathrooms</label>
+            <input asp-for="Bathrooms" type="number" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Area (m²)</label>
+            <input asp-for="Area" type="number" step="0.01" class="form-control" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn text-white" style="background:#9C2A2A;">Save Changes</button>
+    <a href="/Properties/Details/@Model.PropertyId" class="btn btn-outline-secondary">Cancel</a>
+    <a href="/PropertyImages?propertyId=@Model.PropertyId" class="btn btn-outline-dark">Manage Photos</a>
+</form>

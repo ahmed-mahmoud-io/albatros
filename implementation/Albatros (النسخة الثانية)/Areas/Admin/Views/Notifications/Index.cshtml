@@ -1,0 +1,72 @@
+@model IEnumerable<Albatros.Models.Notification>
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="admin-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 style="font-size:18px; font-weight:700; margin:0;">🔔 Notifications</h3>
+        @if (Model != null && Model.Any())
+        {
+            <button id="clearAllBtn" style="background:none; border:1px solid #ccc; border-radius:6px; padding:6px 14px; font-size:12px; cursor:pointer; color:#9C2A2A;">Clear All</button>
+        }
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var n in Model)
+        {
+            <div class="notif-item @(n.IsRead ? "read" : "unread")" data-id="@n.Id" style="display:flex; align-items:flex-start; gap:12px; padding:14px 16px; border-radius:10px; margin-bottom:8px; cursor:pointer; @(n.IsRead ? "" : "background:#FFF8F0; border:1px solid #F0DCC0;") border:1px solid #EFEDE9; transition:background .2s;">
+                <div style="width:10px; height:10px; border-radius:50%; background:@(n.IsRead ? "#D0D0D0" : "#9C2A2A"); flex-shrink:0; margin-top:5px;"></div>
+                <div style="flex:1;">
+                    <div style="font-size:14px; line-height:1.5; margin-bottom:4px;">
+                        @if (!string.IsNullOrEmpty(n.LinkUrl))
+                        {
+                            <a href="@n.LinkUrl" style="color:inherit; text-decoration:none;">@n.Message</a>
+                        }
+                        else
+                        {
+                            @n.Message
+                        }
+                    </div>
+                    <div style="font-size:12px; color:var(--text-muted);">@n.CreatedAt.ToString("MMM dd, yyyy - HH:mm")</div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p style="text-align:center; padding:60px 0; color:var(--text-muted);">No notifications yet.</p>
+    }
+</div>
+
+@section Scripts {
+<script>
+    document.querySelectorAll('.notif-item.unread').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var id = el.getAttribute('data-id');
+            fetch('/Admin/Notifications/MarkRead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'id=' + id
+            });
+            el.classList.remove('unread');
+            el.style.background = '';
+            el.style.borderColor = '#EFEDE9';
+            el.querySelector('div:first-child').style.background = '#D0D0D0';
+        });
+    });
+
+    document.getElementById('clearAllBtn')?.addEventListener('click', function() {
+        if (!confirm('Clear all notifications?')) return;
+        fetch('/Admin/Notifications/DeleteAll', { method: 'POST' })
+            .then(function(r) {
+                if (r.ok) {
+                    document.querySelectorAll('.notif-item').forEach(function(el) { el.remove(); });
+                    document.querySelector('.admin-card').insertAdjacentHTML('beforeend', '<p style="text-align:center; padding:60px 0; color:var(--text-muted);">No notifications yet.</p>');
+                    document.getElementById('clearAllBtn').remove();
+                }
+            });
+    });
+</script>
+}

@@ -1,0 +1,69 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تأكيد البريد الإلكتروني - ALBATROS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --maroon: #9C2A2A;
+            --maroon-dark: #7A2020;
+            --black: #0A0A0A;
+            --white: #FFFFFF;
+            --gray-bg: #F8F8F8;
+            --gray-mid: #E4E1DC;
+            --text-muted: #8A8580;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background: var(--gray-bg); color: var(--black); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .confirm-box { background: var(--white); border-radius: 16px; padding: 40px; max-width: 500px; width: 100%; text-align: center; border: 1px solid var(--gray-mid); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .icon { font-size: 60px; margin-bottom: 24px; color: var(--maroon); }
+        h1 { font-family: 'Playfair Display', 'Cairo', serif; font-size: 28px; font-weight: 700; margin-bottom: 16px; color: var(--black); }
+        p { color: var(--text-muted); font-size: 15px; line-height: 1.8; margin-bottom: 30px; }
+        .btn-maroon { display: inline-block; width: 100%; padding: 14px; background: var(--maroon); color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+        .btn-maroon:hover { background: var(--maroon-dark); }
+        .test-box { margin-top: 24px; padding: 18px; background: #FFF8E1; border: 1px dashed #FFE082; border-radius: 10px; text-align: left; direction: ltr; font-family: monospace; font-size: 13px; }
+        .test-title { font-weight: 700; color: #F57F17; margin-bottom: 8px; font-family: inherit; }
+        .test-link { color: var(--maroon); font-weight: 700; word-break: break-all; }
+    </style>
+</head>
+<body>
+    <div class="confirm-box">
+        <div class="icon">✉️</div>
+        <h1>تفعيل الحساب</h1>
+        <p style="margin-bottom: 20px;">تم إرسال رمز تفعيل الحساب (OTP) بنجاح إلى البريد الإلكتروني: <strong style="color: var(--black);">@ViewBag.Email</strong>. يرجى إدخال الرمز المكون من 6 أرقام لتفعيل حسابك.</p>
+        
+        <form action="/Account/VerifyOtp" method="post" style="margin-bottom: 20px; text-align: right;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="email" value="@ViewBag.Email" />
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 13px; font-weight: 600; color: #5A5A5A; margin-bottom: 8px;">رمز التحقق (OTP)</label>
+                <input type="text" name="code" placeholder="------" required maxlength="6" style="width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--gray-mid); background: var(--gray-bg); font-size: 20px; font-weight: bold; text-align: center; letter-spacing: 4px;" autocomplete="off" />
+            </div>
+            @if (ViewBag.Error != null)
+            {
+                <div style="background: #FFEBEE; color: #C62828; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; border: 1px solid #FFCDD2; text-align: center;">@ViewBag.Error</div>
+            }
+            <button type="submit" class="btn-maroon" style="width: 100%; padding: 14px; background: var(--maroon); color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: background 0.2s;">تفعيل الحساب</button>
+        </form>
+
+        <a href="/Account/ResendVerification?email=@ViewBag.Email" style="display: block; color: var(--maroon); font-size: 14px; font-weight: 600; text-decoration: none; margin-bottom: 8px; padding: 10px; border: 1px solid var(--maroon); border-radius: 10px; transition: background 0.2s;" onmouseover="this.style.background='#9C2A2A'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='#9C2A2A';">إعادة إرسال الرمز</a>
+
+        <a href="/Account/Login" style="display: block; color: var(--text-muted); font-size: 14px; text-decoration: none; margin-bottom: 10px;">العودة لتسجيل الدخول</a>
+
+        @if (ViewBag.Token != null)
+        {
+            <div class="test-box">
+                <div class="test-title">🛠️ بيئة التطوير المحلية (اختبار):</div>
+                <div style="margin-bottom: 6px;">رمز التحقق الحالي هو: <strong style="color: var(--maroon); font-size: 16px; font-family: monospace;">@ViewBag.Token</strong></div>
+                <div style="margin-bottom: 6px; font-size: 11px;">للتجربة السريعة مباشرة دون إدخال الرمز:</div>
+                <a href="/Account/VerifyEmail?token=@ViewBag.Token" class="test-link">تفعيل الحساب مباشرة</a>
+            </div>
+        }
+    </div>
+</body>
+</html>

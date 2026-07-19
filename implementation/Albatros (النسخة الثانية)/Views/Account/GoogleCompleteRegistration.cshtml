@@ -1,0 +1,93 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complete Registration - ALBATROS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root { --maroon: #9C2A2A; --maroon-dark: #7A2020; --black: #0A0A0A; --white: #FFFFFF; --gray-bg: #F8F8F8; --gray-mid: #E4E1DC; --text-muted: #8A8580; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Cairo', sans-serif; }
+        body { background: var(--white); color: var(--black); min-height: 100vh; display: flex; }
+        .auth-section { width: 100%; min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+        .auth-visual { background: linear-gradient(155deg, var(--maroon), var(--maroon-dark)); color: white; padding: 70px; display: flex; flex-direction: column; justify-content: space-between; }
+        .auth-visual h1 { font-family: 'Playfair Display', serif; font-size: 42px; line-height: 1.2; margin-top: 40px; }
+        .auth-visual p { font-size: 16px; opacity: 0.85; margin-top: 16px; max-width: 400px; line-height: 1.6; }
+        .auth-form-side { display: flex; align-items: center; justify-content: center; padding: 50px 40px; }
+        .auth-box { width: 100%; max-width: 400px; }
+        .auth-box h2 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+        .auth-box .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+        .field { margin-bottom: 18px; }
+        .field label { display: block; font-size: 12px; font-weight: 600; color: #5A5A5A; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .field input { width: 100%; padding: 13px 16px; border-radius: 10px; border: 1px solid var(--gray-mid); background: var(--gray-bg); font-size: 14px; transition: all 0.2s; }
+        .field input:focus { border-color: var(--maroon); background: var(--white); outline: none; box-shadow: 0 0 0 3px rgba(156, 42, 42, 0.1); }
+        .role-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+        .role-tab { position: relative; }
+        .role-tab input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+        .role-tab label { display: flex; align-items: center; justify-content: center; padding: 14px; border: 1.5px solid var(--gray-mid); border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; background: var(--gray-bg); }
+        .role-tab input:checked + label { border-color: var(--maroon); background: rgba(156, 42, 42, 0.05); color: var(--maroon); }
+        .btn-maroon { width: 100%; padding: 14px; background: var(--maroon); color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
+        .btn-maroon:hover { background: var(--maroon-dark); }
+        .logo-bird { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 20px; letter-spacing: 2px; }
+        @@media (max-width: 900px) { .auth-section { grid-template-columns: 1fr; } .auth-visual { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="auth-section">
+        <div class="auth-visual">
+            <div>
+                <div class="logo-bird">
+                    <svg viewBox="0 0 48 48" width="36" height="36"><path d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="rgba(255,255,255,0.9)"/><path d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="rgba(255,255,255,0.9)"/><path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="rgba(255,255,255,0.6)"/></svg>
+                    ALBATROS
+                </div>
+                <h1>Almost there!</h1>
+                <p>Just a few more details to set up your ALBATROS account.</p>
+            </div>
+            <div style="font-size: 13px; opacity: 0.6;">&copy; 2026 ALBATROS Real Estate. All rights reserved.</div>
+        </div>
+        <div class="auth-form-side">
+            <div class="auth-box">
+                <h2>Complete Registration</h2>
+                <div class="subtitle">Just a few more details to get started</div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div style="background:#FFEBEE;color:#C62828;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:20px;border:1px solid #FFCDD2;">@ViewBag.Error</div>
+                }
+
+                <form method="post">
+                    @Html.AntiForgeryToken()
+
+                    <label style="font-size:12px;font-weight:600;color:#5A5A5A;margin-bottom:8px;display:block;text-transform:uppercase;">Account Type</label>
+                    <div class="role-tabs">
+                        <div class="role-tab">
+                            <input type="radio" id="roleUser" name="role" value="User" checked />
+                            <label for="roleUser">Buyer / Tenant</label>
+                        </div>
+                        <div class="role-tab">
+                            <input type="radio" id="roleOwner" name="role" value="Owner" />
+                            <label for="roleOwner">Property Owner</label>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="fullName">Full Name</label>
+                        <input id="fullName" name="fullName" type="text" value="@ViewBag.FullName" placeholder="John Doe" required />
+                    </div>
+                    <div class="field">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input id="phoneNumber" name="phoneNumber" type="tel" placeholder="+966 50 123 4567" required />
+                    </div>
+
+                    <button type="submit" class="btn-maroon">Complete Registration</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

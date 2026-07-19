@@ -1,0 +1,20 @@
+@model Albatros.Models.VisitRequest
+@{ ViewData["Title"] = "Viewing Request Details"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Viewing Request</h2>
+
+<dl class="row" style="max-width:520px;">
+    <dt class="col-sm-4">Property</dt>
+    <dd class="col-sm-8">@Model.Property?.Title (@Model.Property?.City)</dd>
+
+    <dt class="col-sm-4">Requested by</dt>
+    <dd class="col-sm-8">@Model.User?.FullName</dd>
+
+    <dt class="col-sm-4">Date &amp; Time</dt>
+    <dd class="col-sm-8">@Model.VisitDate.ToString("MMM d, yyyy h:mm tt")</dd>
+
+    <dt class="col-sm-4">Status</dt>
+    <dd class="col-sm-8"><span class="badge bg-secondary">@Model.Status</span></dd>
+</dl>
+
+<a href="/VisitRequests" class="btn btn-outline-secondary">Back</a>

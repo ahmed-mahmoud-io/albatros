@@ -1,0 +1,20 @@
+@model Albatros.Models.Property
+@{
+    ViewData["Title"] = "Admin Delete Property";
+}
+
+<div class="admin-card" style="max-width:550px; margin:40px auto; text-align:center;">
+    <div style="font-size:48px; margin-bottom:16px;">🗑️</div>
+    <h1 style="font-size:24px; color:#C62828; margin-bottom:12px;">Permanent Deletion</h1>
+    <p style="color:#8A8580; margin-bottom:24px; line-height:1.6;">
+        Are you sure you want to permanently remove property <strong style="color:#0A0A0A;">#@Model.PropertyId (@Model.Title)</strong> from the database?
+    </p>
+
+    <form asp-area="Admin" asp-controller="AdminProperties" asp-action="Delete" asp-route-id="@Model.PropertyId" method="post">
+        @Html.AntiForgeryToken()
+        <div style="display:flex; gap:12px; justify-content:center;">
+            <button type="submit" class="btn" style="background:#D32F2F; color:white; padding:10px 24px;">Confirm Deletion</button>
+            <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Index" class="btn btn-ghost" style="padding:10px 24px;">Cancel</a>
+        </div>
+    </form>
+</div>

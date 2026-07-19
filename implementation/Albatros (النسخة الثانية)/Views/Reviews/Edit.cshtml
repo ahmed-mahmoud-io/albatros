@@ -1,0 +1,37 @@
+@model Albatros.Models.Review
+@{
+    ViewData["Title"] = "Edit Review";
+}
+
+<div class="wrap" style="padding: 40px 0 80px;">
+    <div style="background: white; border-radius: 16px; padding: 40px; max-width: 600px; margin: 0 auto; border: 1px solid #EFEDE9; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <div class="eyebrow" data-i18n="rev_eyebrow">CLIENT FEEDBACK</div>
+        <h1 style="font-size: 26px; font-family: 'Playfair Display', serif; margin-bottom: 24px;" data-i18n="edit_review_t">Update Your Review</h1>
+
+        <form asp-controller="Reviews" asp-action="Edit" asp-route-id="@Model.ReviewId" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ReviewId" />
+
+            <div class="field" style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 12px; font-weight: 600; color: #5A5A5A; margin-bottom: 8px; text-transform: uppercase;" data-i18n="rating">Rating Score (1 to 5 Stars)</label>
+                <select asp-for="Rating" style="width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--gray-mid); background: var(--gray-bg); font-size: 15px;">
+                    <option value="5">★★★★★ (5 - Outstanding)</option>
+                    <option value="4">★★★★☆ (4 - Very Good)</option>
+                    <option value="3">★★★☆☆ (3 - Average)</option>
+                    <option value="2">★★☆☆☆ (2 - Below Expectations)</option>
+                    <option value="1">★☆☆☆☆ (1 - Poor)</option>
+                </select>
+            </div>
+
+            <div class="field" style="margin-bottom: 28px;">
+                <label asp-for="Comment" style="display: block; font-size: 12px; font-weight: 600; color: #5A5A5A; margin-bottom: 8px; text-transform: uppercase;" data-i18n="comment">Your Feedback & Experience</label>
+                <textarea asp-for="Comment" rows="5" style="width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--gray-mid); background: var(--gray-bg); font-size: 14px;" required></textarea>
+            </div>
+
+            <div style="display: flex; gap: 16px;">
+                <button type="submit" class="btn btn-maroon" style="padding: 14px 28px; flex: 1;" data-i18n="save_changes">Save Changes</button>
+                <a asp-controller="Properties" asp-action="Details" asp-route-id="@Model.PropertyId" class="btn btn-ghost" style="padding: 14px 24px;" data-i18n="cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

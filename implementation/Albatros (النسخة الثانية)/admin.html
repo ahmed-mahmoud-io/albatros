@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | ALBATROS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon:#9C2A2A; --maroon-dark:#7A2020; --black:#0A0A0A; --white:#FFFFFF;
+    --gray-bg:#F6F5F3; --gray-mid:#E4E1DC; --text-muted:#8A8580;
+    --green:#1E8E5A; --amber:#B5820A; --sidebar-w:250px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--gray-bg);color:var(--black);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Playfair Display',serif;}
+  a{text-decoration:none;color:inherit;}
+  button{font-family:inherit;}
+
+  /* ---------- LAYOUT ---------- */
+  .admin-shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh;}
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{background:var(--black);color:#C9C6C1;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:26px 18px;}
+  .sb-logo{display:flex;align-items:center;gap:10px;color:var(--white);font-size:19px;font-weight:700;letter-spacing:1.5px;padding:0 8px 28px;}
+  .logo-mark{width:30px;height:30px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;}
+  .logo-mark svg{overflow:visible;display:block;}
+  .logo-mark .wing{transform-origin:24px 24px;transform-box:fill-box;animation:wingFlap 1.5s ease-in-out both;}
+  .logo-mark .wing-r{animation-name:wingFlapR;}
+  .logo-mark .bird-fly{transform-origin:24px 24px;animation:flyIn 1.5s cubic-bezier(.3,1.15,.6,1) both;}
+  @keyframes flyIn{0%{transform:translate(90px,-55px) rotate(28deg) scale(.5);opacity:0;}18%{opacity:1;}55%{transform:translate(-12px,8px) rotate(-8deg) scale(1.08);}78%{transform:translate(3px,-2px) rotate(4deg) scale(.97);}100%{transform:translate(0,0) rotate(0) scale(1);}}
+  @keyframes wingFlap{0%{transform:scaleY(1);}20%{transform:scaleY(.35);}40%{transform:scaleY(1);}60%{transform:scaleY(.35);}80%{transform:scaleY(.9);}100%{transform:scaleY(.2);}}
+  @keyframes wingFlapR{0%{transform:scaleY(1);}20%{transform:scaleY(.35);}40%{transform:scaleY(1);}60%{transform:scaleY(.35);}80%{transform:scaleY(.9);}100%{transform:scaleY(.2);}}
+
+  .sb-nav{display:flex;flex-direction:column;gap:2px;flex:1;}
+  .sb-item{
+    display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:9px;
+    font-size:13.8px;font-weight:500;color:#B5B2AD;cursor:pointer;transition:all .15s;
+  }
+  .sb-item svg{flex-shrink:0;stroke:#8A8580;transition:stroke .15s;}
+  .sb-item:hover{background:#161616;color:var(--white);}
+  .sb-item.active{background:var(--maroon);color:var(--white);}
+  .sb-item.active svg{stroke:var(--white);}
+  .sb-badge{margin-inline-start:auto;background:rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;}
+  .sb-item.active .sb-badge{background:rgba(255,255,255,0.25);}
+  .sb-foot{border-top:1px solid #1c1c1c;padding-top:16px;margin-top:16px;}
+  .sb-back{display:flex;align-items:center;gap:10px;font-size:13px;color:#8A8580;padding:10px 12px;}
+  .sb-back:hover{color:var(--white);}
+
+  /* ---------- MAIN ---------- */
+  .main{padding:0;}
+  .topbar{
+    background:var(--white);border-bottom:1px solid var(--gray-mid);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;position:sticky;top:0;z-index:20;
+  }
+  .page-title{font-size:22px;font-weight:700;font-family:'Playfair Display',serif;}
+  .topbar-right{display:flex;align-items:center;gap:14px;}
+  .lang{display:flex;align-items:center;gap:6px;color:#5A5A5A;font-size:13px;font-weight:600;padding:8px 12px;border-radius:6px;cursor:pointer;border:1px solid var(--gray-mid);}
+  .lang:hover{background:var(--gray-bg);}
+  .admin-chip{display:flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border:1px solid var(--gray-mid);border-radius:30px;}
+  .admin-avatar{width:30px;height:30px;border-radius:50%;background:var(--maroon);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;font-family:'Playfair Display',serif;}
+  .admin-chip .name{font-size:13px;font-weight:600;}
+  .admin-chip .role{font-size:11px;color:var(--text-muted);}
+
+  .content{padding:28px 32px 60px;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ---------- OVERVIEW ---------- */
+  .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px;}
+  .stat-card{background:var(--white);border:1px solid var(--gray-mid);border-radius:14px;padding:22px;}
+  .stat-card .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
+  .stat-icon{width:38px;height:38px;border-radius:10px;background:var(--gray-bg);display:flex;align-items:center;justify-content:center;}
+  .stat-delta{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:20px;}
+  .stat-delta.up{color:var(--green);background:#E8F5EE;}
+  .stat-delta.down{color:#B5442E;background:#FBECE8;}
+  .stat-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-bottom:4px;}
+  .stat-label{font-size:12.5px;color:var(--text-muted);}
+
+  .panels-row{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;margin-bottom:28px;align-items:start;}
+  .panel{background:var(--white);border:1px solid var(--gray-mid);border-radius:14px;padding:24px;}
+  .panel h3{font-size:15.5px;font-weight:700;margin-bottom:20px;font-family:'Inter',sans-serif;}
+
+  .bar-chart{display:flex;align-items:flex-end;gap:14px;height:170px;padding-top:10px;}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .bar{width:100%;background:linear-gradient(180deg, var(--maroon) 0%, var(--maroon-dark) 100%);border-radius:6px 6px 0 0;}
+  .bar-col .m{font-size:11px;color:var(--text-muted);}
+
+  .activity-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #F2F0ED;font-size:13px;}
+  .activity-item:last-child{border-bottom:none;}
+  .activity-dot{width:8px;height:8px;border-radius:50%;background:var(--maroon);margin-top:5px;flex-shrink:0;}
+  .activity-item .t{color:var(--text-muted);font-size:11.5px;margin-top:2px;}
+
+  /* ---------- TABLE / TOOLBAR ---------- */
+  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:14px;flex-wrap:wrap;}
+  .search-box{
+    display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--gray-mid);
+    border-radius:8px;padding:9px 14px;min-width:260px;
+  }
+  .search-box input{border:none;outline:none;font-size:13.5px;width:100%;background:transparent;}
+  .tab-filters{display:flex;gap:8px;}
+  .tab-filter{padding:8px 16px;border-radius:20px;font-size:12.8px;font-weight:600;color:#5A5A5A;background:var(--white);border:1px solid var(--gray-mid);cursor:pointer;}
+  .tab-filter.active{background:var(--black);color:var(--white);border-color:var(--black);}
+
+  .data-table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--gray-mid);border-radius:14px;overflow:hidden;}
+  .data-table th{text-align:start;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);background:var(--gray-bg);padding:13px 16px;font-weight:700;}
+  .data-table td{padding:14px 16px;font-size:13.5px;border-top:1px solid #F2F0ED;vertical-align:middle;}
+  .row-thumb{display:flex;align-items:center;gap:12px;}
+  .row-thumb img{width:44px;height:44px;border-radius:8px;object-fit:cover;}
+  .row-title{font-weight:600;}
+  .row-sub{font-size:12px;color:var(--text-muted);}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
+  .badge.sale{background:#FBECE8;color:#B5442E;}
+  .badge.rent{background:#EAF1FB;color:#2E5FB5;}
+  .badge.active{background:#E8F5EE;color:var(--green);}
+  .badge.pending{background:#FBF3E0;color:var(--amber);}
+  .badge.buyer{background:#EAF1FB;color:#2E5FB5;}
+  .badge.seller{background:#F4E9F5;color:#7A2E9E;}
+  .badge.new{background:#FBECE8;color:#B5442E;}
+  .badge.contacted{background:#FBF3E0;color:var(--amber);}
+  .badge.closed{background:#E8F5EE;color:var(--green);}
+  .row-actions{display:flex;gap:8px;}
+  .icon-btn{
+    width:30px;height:30px;border-radius:7px;border:1px solid var(--gray-mid);background:var(--white);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .icon-btn:hover{background:var(--gray-bg);}
+  .icon-btn.danger:hover{background:#FBECE8;border-color:#f0c9c1;}
+  .icon-btn svg{stroke:#5A5A5A;}
+  .icon-btn.danger svg{stroke:#B5442E;}
+
+  .btn{font-size:13.5px;font-weight:600;padding:10px 18px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .18s;display:inline-flex;align-items:center;gap:8px;}
+  .btn-maroon{background:var(--maroon);color:var(--white);}
+  .btn-maroon:hover{background:var(--maroon-dark);}
+  .btn-outline{background:var(--white);border:1px solid var(--gray-mid);color:var(--black);}
+  .btn-outline:hover{background:var(--gray-bg);}
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(10,10,10,0.55);z-index:200;
+    display:none;align-items:center;justify-content:center;padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--white);border-radius:16px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:30px;}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+  .modal-head h3{font-size:19px;font-weight:700;font-family:'Playfair Display',serif;}
+  .modal-close{width:32px;height:32px;border-radius:50%;border:1px solid var(--gray-mid);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--white);}
+  .modal-close:hover{background:var(--gray-bg);}
+  .m-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:12px;font-weight:600;color:#5A5A5A;margin-bottom:7px;text-transform:uppercase;letter-spacing:.4px;}
+  .field input, .field select{
+    width:100%;padding:11px 13px;border-radius:8px;border:1px solid var(--gray-mid);
+    background:var(--gray-bg);font-size:13.8px;font-family:'Inter',sans-serif;color:var(--black);
+  }
+  .modal-actions{display:flex;gap:10px;margin-top:6px;}
+  .modal-actions .btn{flex:1;justify-content:center;}
+
+  @media(max-width:1100px){
+    .stat-cards{grid-template-columns:1fr 1fr;}
+    .panels-row{grid-template-columns:1fr;}
+  }
+  @media(max-width:900px){
+    .admin-shell{grid-template-columns:1fr;}
+    .sidebar{position:static;height:auto;flex-direction:row;overflow-x:auto;}
+    .sb-nav{flex-direction:row;}
+    .sb-foot{display:none;}
+    .data-table{display:block;overflow-x:auto;}
+  }
+
+  html[dir="rtl"] body{font-family:'Cairo',sans-serif;}
+  html[dir="rtl"] h1,html[dir="rtl"] h2,html[dir="rtl"] h3,html[dir="rtl"] .page-title,html[dir="rtl"] .stat-num{font-family:'Cairo',sans-serif;}
+</style>
+</head>
+<body>
+
+<div class="admin-shell">
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <span class="logo-mark" style="cursor:default;">
+        <svg viewBox="0 0 48 48" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+          <g class="bird-fly">
+            <path class="wing wing-l" d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="#9C2A2A"/>
+            <path class="wing wing-r" d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="#9C2A2A"/>
+            <path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="#7A2020"/>
+          </g>
+        </svg>
+      </span>
+      ALBATROS <span style="color:#8A8580;font-weight:500;font-size:12px;">Admin</span>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-item active" data-view="overview">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="adm_overview">Overview</span>
+      </div>
+      <div class="sb-item" data-view="properties">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 9.5L12 3l9 6.5M5 9v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="adm_properties">Properties</span>
+        <span class="sb-badge">9</span>
+      </div>
+      <div class="sb-item" data-view="leads">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="adm_leads">Leads</span>
+        <span class="sb-badge">6</span>
+      </div>
+      <div class="sb-item" data-view="users">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="adm_users">Users</span>
+        <span class="sb-badge">8</span>
+      </div>
+    </nav>
+
+    <div class="sb-foot">
+      <a class="sb-back" href="index.html">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 12H5m0 0l7 7m-7-7l7-7" stroke="#8A8580" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="adm_backsite">Back to website</span>
+      </a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title" id="pageTitle" data-i18n="adm_overview">Overview</div>
+      <div class="topbar-right">
+        <div class="lang" id="langToggle" role="button" tabindex="0">
+          <span id="langLabel">EN</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#5A5A5A" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="admin-chip">
+          <div class="admin-avatar">SA</div>
+          <div>
+            <div class="name">Sara Al-Qahtani</div>
+            <div class="role" data-i18n="adm_role">Administrator</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- OVERVIEW -->
+      <div class="view active" id="view-overview">
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div class="top">
+              <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 9.5L12 3l9 6.5M5 9v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V9" stroke="#9C2A2A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="stat-delta up">+12%</div>
+            </div>
+            <div class="stat-num">2,548</div>
+            <div class="stat-label" data-i18n="adm_stat_props">Total Properties</div>
+          </div>
+          <div class="stat-card">
+            <div class="top">
+              <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#9C2A2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="stat-delta up">+5%</div>
+            </div>
+            <div class="stat-num">1,940</div>
+            <div class="stat-label" data-i18n="adm_stat_active">Active Listings</div>
+          </div>
+          <div class="stat-card">
+            <div class="top">
+              <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#9C2A2A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="stat-delta up">+18%</div>
+            </div>
+            <div class="stat-num">356</div>
+            <div class="stat-label" data-i18n="adm_stat_leads">New Leads (30d)</div>
+          </div>
+          <div class="stat-card">
+            <div class="top">
+              <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z" stroke="#9C2A2A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="stat-delta down">-2%</div>
+            </div>
+            <div class="stat-num">12,084</div>
+            <div class="stat-label" data-i18n="adm_stat_users">Registered Users</div>
+          </div>
+        </div>
+
+        <div class="panels-row">
+          <div class="panel">
+            <h3 data-i18n="adm_chart_title">Properties Listed Per Month</h3>
+            <div class="bar-chart">
+              <div class="bar-col"><div class="bar" style="height:55%"></div><div class="m">Feb</div></div>
+              <div class="bar-col"><div class="bar" style="height:68%"></div><div class="m">Mar</div></div>
+              <div class="bar-col"><div class="bar" style="height:48%"></div><div class="m">Apr</div></div>
+              <div class="bar-col"><div class="bar" style="height:80%"></div><div class="m">May</div></div>
+              <div class="bar-col"><div class="bar" style="height:64%"></div><div class="m">Jun</div></div>
+              <div class="bar-col"><div class="bar" style="height:92%"></div><div class="m">Jul</div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 data-i18n="adm_activity_title">Recent Activity</h3>
+            <div class="activity-item"><div class="activity-dot"></div><div><div>New lead from <b>Khalid M.</b> for Al Narjis Villa</div><div class="t">10 minutes ago</div></div></div>
+            <div class="activity-item"><div class="activity-dot"></div><div><div>Property "Hittin Townhouse" marked as Sold</div><div class="t">1 hour ago</div></div></div>
+            <div class="activity-item"><div class="activity-dot"></div><div><div>New seller registered — Mona F.</div><div class="t">3 hours ago</div></div></div>
+            <div class="activity-item"><div class="activity-dot"></div><div><div>Price updated on Al Yasmin Estate</div><div class="t">Yesterday</div></div></div>
+            <div class="activity-item"><div class="activity-dot"></div><div><div>New lead from <b>Reem S.</b> for KAFD Loft</div><div class="t">Yesterday</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROPERTIES -->
+      <div class="view" id="view-properties">
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#8A8580" stroke-width="1.6"/><path d="M21 21l-4.35-4.35" stroke="#8A8580" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <input type="text" id="propSearch" data-i18n-ph="adm_search_props" placeholder="Search properties...">
+          </div>
+          <button class="btn btn-maroon" id="addPropertyBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+            <span data-i18n="adm_add_property">Add Property</span>
+          </button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-i18n="adm_th_property">Property</th>
+              <th data-i18n="adm_th_type">Type</th>
+              <th data-i18n="adm_th_price">Price</th>
+              <th data-i18n="adm_th_status">Status</th>
+              <th data-i18n="adm_th_actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="propertiesBody"></tbody>
+        </table>
+      </div>
+
+      <!-- LEADS -->
+      <div class="view" id="view-leads">
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#8A8580" stroke-width="1.6"/><path d="M21 21l-4.35-4.35" stroke="#8A8580" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <input type="text" data-i18n-ph="adm_search_leads" placeholder="Search leads...">
+          </div>
+          <div class="tab-filters" id="leadFilters">
+            <div class="tab-filter active" data-status="all" data-i18n="adm_all">All</div>
+            <div class="tab-filter" data-status="new" data-i18n="adm_new">New</div>
+            <div class="tab-filter" data-status="contacted" data-i18n="adm_contacted">Contacted</div>
+            <div class="tab-filter" data-status="closed" data-i18n="adm_closed">Closed</div>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-i18n="adm_th_name">Name</th>
+              <th data-i18n="adm_th_contact">Contact</th>
+              <th data-i18n="adm_th_interest">Interested In</th>
+              <th data-i18n="adm_th_date">Date</th>
+              <th data-i18n="adm_th_status">Status</th>
+              <th data-i18n="adm_th_actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leadsBody"></tbody>
+        </table>
+      </div>
+
+      <!-- USERS -->
+      <div class="view" id="view-users">
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#8A8580" stroke-width="1.6"/><path d="M21 21l-4.35-4.35" stroke="#8A8580" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <input type="text" data-i18n-ph="adm_search_users" placeholder="Search users...">
+          </div>
+          <div class="tab-filters" id="userFilters">
+            <div class="tab-filter active" data-role="all" data-i18n="adm_all">All</div>
+            <div class="tab-filter" data-role="buyer" data-i18n="reg_buyer">Buyer</div>
+            <div class="tab-filter" data-role="seller" data-i18n="reg_seller">Seller</div>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-i18n="adm_th_user">User</th>
+              <th data-i18n="adm_th_role">Role</th>
+              <th data-i18n="adm_th_joined">Joined</th>
+              <th data-i18n="adm_th_status">Status</th>
+              <th data-i18n="adm_th_actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT PROPERTY MODAL -->
+<div class="modal-overlay" id="propertyModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle" data-i18n="adm_add_property">Add Property</h3>
+      <div class="modal-close" id="closeModal">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#333" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="field"><label data-i18n="adm_f_title">Title</label><input type="text" id="f_title" placeholder="Al Narjis Villa Residence"></div>
+      <div class="field"><label data-i18n="f_location">Location</label><input type="text" id="f_location" placeholder="Al Narjis, Riyadh"></div>
+    </div>
+    <div class="m-row">
+      <div class="field"><label data-i18n="adm_f_price">Price (SAR)</label><input type="number" id="f_price" placeholder="340000"></div>
+      <div class="field">
+        <label data-i18n="f_type">Property Type</label>
+        <select id="f_type"><option data-i18n="f_villa">Villa</option><option data-i18n="f_apartment">Apartment</option><option data-i18n="f_townhouse">Townhouse</option></select>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="field">
+        <label data-i18n="f_status">Status</label>
+        <select id="f_status"><option data-i18n="f_forsale">For Sale</option><option data-i18n="f_forrent">For Rent</option></select>
+      </div>
+      <div class="field">
+        <label data-i18n="adm_f_listing_status">Listing Status</label>
+        <select id="f_listing_status"><option data-i18n="adm_active">Active</option><option data-i18n="adm_pending">Pending</option></select>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="field"><label data-i18n="d_beds">Bedrooms</label><input type="number" id="f_beds" placeholder="4"></div>
+      <div class="field"><label data-i18n="d_baths">Bathrooms</label><input type="number" id="f_baths" placeholder="3"></div>
+    </div>
+    <div class="field"><label data-i18n="adm_f_image">Image URL</label><input type="text" id="f_image" placeholder="https://..."></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="cancelModal" data-i18n="f_reset">Cancel</button>
+      <button class="btn btn-maroon" id="saveProperty" data-i18n="adm_save">Save Property</button>
+    </div>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script>
+(function(){
+  /* ---------- sample data ---------- */
+  let properties = [
+    {id:1, title:"Al Narjis Villa Residence", loc:"Al Narjis, Riyadh", type:"Villa", status:"sale", listing:"active", price:340000, beds:4, baths:3, img:"https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=200&auto=format&fit=crop"},
+    {id:2, title:"Olaya Sky Apartment", loc:"Olaya District, Riyadh", type:"Apartment", status:"rent", listing:"active", price:85000, beds:2, baths:2, img:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=200&auto=format&fit=crop"},
+    {id:3, title:"Al Yasmin Signature Estate", loc:"Al Yasmin, Riyadh", type:"Villa", status:"sale", listing:"active", price:1250000, beds:6, baths:5, img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=200&auto=format&fit=crop"},
+    {id:4, title:"Al Malqa Garden Villa", loc:"Al Malqa, Riyadh", type:"Villa", status:"sale", listing:"pending", price:980000, beds:5, baths:4, img:"https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=200&auto=format&fit=crop"},
+    {id:5, title:"King Abdullah Financial Loft", loc:"KAFD, Riyadh", type:"Apartment", status:"rent", listing:"active", price:120000, beds:3, baths:2, img:"https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=200&auto=format&fit=crop"},
+    {id:6, title:"Diplomatic Quarter Mansion", loc:"Diplomatic Quarter, Riyadh", type:"Villa", status:"sale", listing:"active", price:3400000, beds:6, baths:5, img:"https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=200&auto=format&fit=crop"},
+    {id:7, title:"Al Rabwah Family Home", loc:"Al Rabwah, Riyadh", type:"Villa", status:"sale", listing:"pending", price:610000, beds:4, baths:3, img:"https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?q=80&w=200&auto=format&fit=crop"},
+    {id:8, title:"Hittin Modern Townhouse", loc:"Hittin, Riyadh", type:"Townhouse", status:"sale", listing:"active", price:760000, beds:3, baths:3, img:"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=200&auto=format&fit=crop"},
+    {id:9, title:"Al Sahafa Corner Villa", loc:"Al Sahafa, Riyadh", type:"Villa", status:"rent", listing:"active", price:95000, beds:4, baths:3, img:"https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=200&auto=format&fit=crop"}
+  ];
+  let nextId = 10;
+
+  let leads = [
+    {name:"Khalid Al-Mutairi", email:"khalid.m@example.com", phone:"+966 55 111 2233", interest:"Al Narjis Villa Residence", date:"Jul 9, 2026", status:"new"},
+    {name:"Reem Al-Sultan", email:"reem.s@example.com", phone:"+966 50 222 3344", interest:"KAFD Financial Loft", date:"Jul 8, 2026", status:"new"},
+    {name:"Faisal Al-Dosari", email:"faisal.d@example.com", phone:"+966 54 333 4455", interest:"Al Yasmin Signature Estate", date:"Jul 7, 2026", status:"contacted"},
+    {name:"Nora Al-Harbi", email:"nora.h@example.com", phone:"+966 56 444 5566", interest:"Hittin Townhouse", date:"Jul 6, 2026", status:"contacted"},
+    {name:"Omar Al-Ghamdi", email:"omar.g@example.com", phone:"+966 53 555 6677", interest:"Al Malqa Garden Villa", date:"Jul 3, 2026", status:"closed"},
+    {name:"Layla Al-Zahrani", email:"layla.z@example.com", phone:"+966 58 666 7788", interest:"Olaya Sky Apartment", date:"Jul 1, 2026", status:"closed"}
+  ];
+
+  let users = [
+    {name:"Ahmed Al-Saud", email:"ahmed.s@example.com", role:"buyer", joined:"Jun 2, 2026", status:"active"},
+    {name:"Mona Al-Faraj", email:"mona.f@example.com", role:"seller", joined:"Jun 10, 2026", status:"active"},
+    {name:"Sultan Al-Amri", email:"sultan.a@example.com", role:"buyer", joined:"Jun 14, 2026", status:"active"},
+    {name:"Haya Al-Otaibi", email:"haya.o@example.com", role:"seller", joined:"Jun 20, 2026", status:"active"},
+    {name:"Yousef Al-Shammari", email:"yousef.s@example.com", role:"buyer", joined:"Jun 25, 2026", status:"suspended"},
+    {name:"Aisha Al-Qahtani", email:"aisha.q@example.com", role:"buyer", joined:"Jul 1, 2026", status:"active"},
+    {name:"Fahad Al-Malki", email:"fahad.m@example.com", role:"seller", joined:"Jul 4, 2026", status:"active"},
+    {name:"Sarah Al-Anzi", email:"sarah.a@example.com", role:"buyer", joined:"Jul 6, 2026", status:"active"}
+  ];
+
+  const trashSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6h16z" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const editSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function fmt(n){ return n.toLocaleString('en-US'); }
+
+  function renderProperties(filter){
+    const body = document.getElementById('propertiesBody');
+    const q = (filter || '').toLowerCase();
+    body.innerHTML = properties
+      .filter(p => p.title.toLowerCase().includes(q) || p.loc.toLowerCase().includes(q))
+      .map(p => `
+        <tr data-id="${p.id}">
+          <td>
+            <div class="row-thumb">
+              <img src="${p.img}" alt="">
+              <div><div class="row-title">${p.title}</div><div class="row-sub">${p.loc}</div></div>
+            </div>
+          </td>
+          <td>${p.type}</td>
+          <td>${fmt(p.price)} SAR</td>
+          <td><span class="badge ${p.listing}">${p.listing === 'active' ? 'Active' : 'Pending'}</span> <span class="badge ${p.status}">${p.status === 'sale' ? 'For Sale' : 'For Rent'}</span></td>
+          <td><div class="row-actions">
+            <div class="icon-btn edit-btn" title="Edit">${editSvg}</div>
+            <div class="icon-btn danger delete-btn" title="Delete">${trashSvg}</div>
+          </div></td>
+        </tr>`).join('');
+  }
+
+  function renderLeads(filter){
+    const body = document.getElementById('leadsBody');
+    const list = filter && filter !== 'all' ? leads.filter(l => l.status === filter) : leads;
+    body.innerHTML = list.map((l, i) => `
+      <tr>
+        <td><div class="row-title">${l.name}</div></td>
+        <td><div class="row-sub">${l.email}</div><div class="row-sub">${l.phone}</div></td>
+        <td>${l.interest}</td>
+        <td>${l.date}</td>
+        <td><span class="badge ${l.status}">${l.status.charAt(0).toUpperCase()+l.status.slice(1)}</span></td>
+        <td><div class="row-actions"><div class="icon-btn danger" title="Remove" data-lead="${leads.indexOf(l)}">${trashSvg}</div></div></td>
+      </tr>`).join('');
+    body.querySelectorAll('[data-lead]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const idx = parseInt(btn.getAttribute('data-lead'));
+        leads.splice(idx,1);
+        renderLeads(document.querySelector('#leadFilters .tab-filter.active').getAttribute('data-status'));
+      });
+    });
+  }
+
+  function renderUsers(filter){
+    const body = document.getElementById('usersBody');
+    const list = filter && filter !== 'all' ? users.filter(u => u.role === filter) : users;
+    body.innerHTML = list.map(u => `
+      <tr>
+        <td><div class="row-thumb"><div class="admin-avatar" style="background:${u.role==='seller' ? '#7A2E9E' : '#2E5FB5'}">${u.name.split(' ').map(x=>x[0]).slice(0,2).join('')}</div><div><div class="row-title">${u.name}</div><div class="row-sub">${u.email}</div></div></div></td>
+        <td><span class="badge ${u.role}">${u.role === 'buyer' ? 'Buyer' : 'Seller'}</span></td>
+        <td>${u.joined}</td>
+        <td><span class="badge ${u.status === 'active' ? 'active' : 'pending'}">${u.status === 'active' ? 'Active' : 'Suspended'}</span></td>
+        <td><div class="row-actions"><div class="icon-btn danger" title="Remove" data-user="${users.indexOf(u)}">${trashSvg}</div></div></td>
+      </tr>`).join('');
+    body.querySelectorAll('[data-user]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const idx = parseInt(btn.getAttribute('data-user'));
+        users.splice(idx,1);
+        renderUsers(document.querySelector('#userFilters .tab-filter.active').getAttribute('data-role'));
+      });
+    });
+  }
+
+  /* ---------- sidebar view switching ---------- */
+  document.querySelectorAll('.sb-item[data-view]').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      document.querySelectorAll('.sb-item[data-view]').forEach(i=>i.classList.remove('active'));
+      item.classList.add('active');
+      const view = item.getAttribute('data-view');
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      document.getElementById('view-' + view).classList.add('active');
+      const titleKey = item.querySelector('[data-i18n]').getAttribute('data-i18n');
+      const dict = translations[window.__currentLang || 'en'];
+      document.getElementById('pageTitle').textContent = dict[titleKey] || item.textContent.trim();
+    });
+  });
+
+  /* ---------- property search ---------- */
+  document.getElementById('propSearch').addEventListener('input', (e)=> renderProperties(e.target.value));
+
+  /* ---------- lead / user filters ---------- */
+  document.getElementById('leadFilters').addEventListener('click', (e)=>{
+    const t = e.target.closest('.tab-filter'); if(!t) return;
+    document.querySelectorAll('#leadFilters .tab-filter').forEach(f=>f.classList.remove('active'));
+    t.classList.add('active');
+    renderLeads(t.getAttribute('data-status'));
+  });
+  document.getElementById('userFilters').addEventListener('click', (e)=>{
+    const t = e.target.closest('.tab-filter'); if(!t) return;
+    document.querySelectorAll('#userFilters .tab-filter').forEach(f=>f.classList.remove('active'));
+    t.classList.add('active');
+    renderUsers(t.getAttribute('data-role'));
+  });
+
+  /* ---------- property table row actions (delegated) ---------- */
+  document.getElementById('propertiesBody').addEventListener('click', (e)=>{
+    const row = e.target.closest('tr'); if(!row) return;
+    const id = parseInt(row.getAttribute('data-id'));
+    if(e.target.closest('.delete-btn')){
+      properties = properties.filter(p => p.id !== id);
+      renderProperties(document.getElementById('propSearch').value);
+    } else if(e.target.closest('.edit-btn')){
+      openModal(properties.find(p => p.id === id));
+    }
+  });
+
+  /* ---------- modal ---------- */
+  const modal = document.getElementById('propertyModal');
+  let editingId = null;
+  function openModal(prop){
+    editingId = prop ? prop.id : null;
+    document.getElementById('modalTitle').textContent = prop ? 'Edit Property' : 'Add Property';
+    document.getElementById('f_title').value = prop ? prop.title : '';
+    document.getElementById('f_location').value = prop ? prop.loc : '';
+    document.getElementById('f_price').value = prop ? prop.price : '';
+    document.getElementById('f_type').value = prop ? prop.type : 'Villa';
+    document.getElementById('f_status').value = prop ? (prop.status === 'sale' ? 'For Sale' : 'For Rent') : 'For Sale';
+    document.getElementById('f_beds').value = prop ? prop.beds : '';
+    document.getElementById('f_baths').value = prop ? prop.baths : '';
+    document.getElementById('f_image').value = prop ? prop.img : '';
+    modal.classList.add('open');
+  }
+  function closeModalFn(){ modal.classList.remove('open'); editingId = null; }
+  document.getElementById('addPropertyBtn').addEventListener('click', ()=> openModal(null));
+  document.getElementById('closeModal').addEventListener('click', closeModalFn);
+  document.getElementById('cancelModal').addEventListener('click', closeModalFn);
+  modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModalFn(); });
+
+  document.getElementById('saveProperty').addEventListener('click', ()=>{
+    const title = document.getElementById('f_title').value || 'Untitled Property';
+    const loc = document.getElementById('f_location').value || '—';
+    const price = parseInt(document.getElementById('f_price').value) || 0;
+    const type = document.getElementById('f_type').value;
+    const statusText = document.getElementById('f_status').value;
+    const status = statusText.toLowerCase().includes('rent') ? 'rent' : 'sale';
+    const beds = parseInt(document.getElementById('f_beds').value) || 0;
+    const baths = parseInt(document.getElementById('f_baths').value) || 0;
+    const img = document.getElementById('f_image').value || 'https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=200&auto=format&fit=crop';
+
+    if(editingId){
+      const p = properties.find(p => p.id === editingId);
+      Object.assign(p, {title, loc, price, type, status, beds, baths, img});
+    } else {
+      properties.push({id: nextId++, title, loc, price, type, status, listing:'active', beds, baths, img});
+    }
+    closeModalFn();
+    renderProperties(document.getElementById('propSearch').value);
+  });
+
+  /* ---------- initial render ---------- */
+  renderProperties('');
+  renderLeads('all');
+  renderUsers('all');
+})();
+</script>
+</body>
+</html>

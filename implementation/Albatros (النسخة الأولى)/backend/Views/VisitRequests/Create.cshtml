@@ -1,0 +1,18 @@
+@model Albatros.Models.VisitRequest
+@{ ViewData["Title"] = "Request a Viewing"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Request a Viewing</h2>
+<p class="text-muted">Pick a date and we'll confirm your appointment.</p>
+
+<form asp-controller="VisitRequests" asp-action="Create" method="post" class="mt-4" style="max-width:480px;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="PropertyId" />
+
+    <div class="mb-3">
+        <label class="form-label">Preferred Date &amp; Time</label>
+        <input asp-for="VisitDate" type="datetime-local" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn text-white" style="background:#9C2A2A;">Confirm Request</button>
+    <a href="/Properties/Details/@Model.PropertyId" class="btn btn-outline-secondary">Cancel</a>
+</form>

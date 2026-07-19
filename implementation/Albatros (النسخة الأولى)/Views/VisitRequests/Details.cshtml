@@ -1,0 +1,53 @@
+@model Albatros.Models.VisitRequest
+@{
+    ViewData["Title"] = "Visit Request Details";
+}
+
+@section Styles {
+<style>
+    .status-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+    .status-Pending { background: #FFF8E1; color: #F57F17; }
+    .status-Approved { background: #E8F5E9; color: #2E7D32; }
+    .status-Rejected { background: #FFEBEE; color: #C62828; }
+</style>
+}
+
+<div class="wrap" style="padding: 40px 0 80px;">
+    <div style="background: white; border-radius: 16px; padding: 40px; max-width: 650px; margin: 0 auto; border: 1px solid #EFEDE9; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #EFEDE9; padding-bottom: 20px; margin-bottom: 24px;">
+            <h1 style="font-size: 26px; font-family: 'Playfair Display', serif;" data-i18n="req_summary">Tour Request Summary</h1>
+            <span class="status-badge status-@Model.Status">@Model.Status</span>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px;" data-i18n="target_property">Target Property</div>
+            <div style="font-size: 18px; font-weight: 700;">
+                <a asp-controller="Properties" asp-action="Details" asp-route-id="@Model.PropertyId" style="color: var(--maroon); text-decoration: none;">@(Model.Property?.Title ?? "Property #" + Model.PropertyId)</a>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px;" data-i18n="scheduled_slot">Scheduled Time Slot</div>
+            <div style="font-size: 16px; color: var(--black); font-weight: 500;">
+                📅 @Model.VisitDate.ToString("dddd, MMMM dd, yyyy at hh:mm tt")
+            </div>
+        </div>
+
+        @if (Model.User != null)
+        {
+            <div style="margin-bottom: 28px; padding: 16px; background: var(--gray-bg); border-radius: 10px;">
+                <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Client Information</div>
+                <div><strong>Name:</strong> @Model.User.FullName</div>
+                <div><strong>Phone:</strong> @(Model.User.PhoneNumber ?? "N/A")</div>
+            </div>
+        }
+
+        <div style="display: flex; gap: 16px; border-top: 1px solid #EFEDE9; padding-top: 24px;">
+            <a asp-controller="VisitRequests" asp-action="Index" class="btn btn-ghost" style="flex: 1; text-align: center;" data-i18n="back_list">Back to My Requests</a>
+            @if (Model.Status == Albatros.Models.VisitRequestStatus.Pending)
+            {
+                <a asp-controller="VisitRequests" asp-action="Delete" asp-route-id="@Model.RequestId" class="btn" style="background: #FFEBEE; color: #C62828; flex: 1; text-align: center;" data-i18n="cancel_request">Cancel Request</a>
+            }
+        </div>
+    </div>
+</div>

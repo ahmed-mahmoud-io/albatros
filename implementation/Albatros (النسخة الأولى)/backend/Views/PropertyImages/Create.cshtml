@@ -1,0 +1,18 @@
+@model Albatros.Models.PropertyImage
+@{ ViewData["Title"] = "Add Image"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Add Image</h2>
+
+<form asp-controller="PropertyImages" asp-action="Create" method="post" style="max-width:480px;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="PropertyId" />
+
+    <div class="mb-3">
+        <label class="form-label">Image URL</label>
+        <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
+    </div>
+    <p class="text-muted small">This takes a direct image URL for now -- swap in a real file-upload input + storage (e.g. wwwroot/images or blob storage) when ready.</p>
+
+    <button type="submit" class="btn text-white" style="background:#9C2A2A;">Add Image</button>
+    <a href="/PropertyImages?propertyId=@Model.PropertyId" class="btn btn-outline-secondary">Cancel</a>
+</form>

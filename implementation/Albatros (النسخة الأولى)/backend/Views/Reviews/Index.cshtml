@@ -1,0 +1,22 @@
+@model IEnumerable<Albatros.Models.Review>
+@{ ViewData["Title"] = "Reviews"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Reviews</h2>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var r in Model)
+    {
+        <div class="card mb-2"><div class="card-body">
+            <strong>@r.User?.FullName</strong> &middot; @r.Rating ★
+            <p class="mb-0 text-muted">@r.Comment</p>
+        </div></div>
+    }
+}
+else
+{
+    <p class="text-muted">No reviews yet.</p>
+}
+
+<a href="/Reviews/Create?propertyId=@ViewBag.PropertyId" class="btn text-white" style="background:#9C2A2A;">Write a Review</a>
+<a href="/Properties/Details/@ViewBag.PropertyId" class="btn btn-outline-secondary">Back to Property</a>

@@ -1,0 +1,27 @@
+@model Albatros.Models.Property
+@{
+    ViewData["Title"] = "Delete Property";
+}
+
+<div class="wrap" style="padding: 60px 0;">
+    <div style="background: white; border-radius: 16px; padding: 40px; max-width: 550px; margin: 0 auto; border: 1px solid #FFCDD2; box-shadow: 0 4px 20px rgba(0,0,0,0.04); text-align: center;">
+        <div style="font-size: 50px; margin-bottom: 16px;">⚠️</div>
+        <h1 style="font-size: 26px; font-family: 'Playfair Display', serif; color: #C62828; margin-bottom: 12px;" data-i18n="delete_confirm_title">Confirm Deletion</h1>
+        <p style="color: var(--text-muted); margin-bottom: 24px; line-height: 1.6;" data-i18n="delete_confirm_desc">
+            Are you sure you want to permanently delete <strong style="color:var(--black);">@Model.Title</strong>? This action cannot be undone.
+        </p>
+
+        <div style="background: var(--gray-bg); padding: 16px; border-radius: 10px; margin-bottom: 28px; text-align: left; font-size: 14px;">
+            <div><strong>Location:</strong> @Model.City</div>
+            <div style="margin-top:4px;"><strong>Price:</strong> @Model.Price.ToString("N0") SAR</div>
+        </div>
+
+        <form asp-controller="Properties" asp-action="Delete" asp-route-id="@Model.PropertyId" method="post">
+            @Html.AntiForgeryToken()
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="submit" class="btn" style="background: #D32F2F; color: white; padding: 12px 28px;" data-i18n="btn_delete">Yes, Delete Property</button>
+                <a asp-controller="Properties" asp-action="Details" asp-route-id="@Model.PropertyId" class="btn btn-ghost" style="padding: 12px 24px;" data-i18n="cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

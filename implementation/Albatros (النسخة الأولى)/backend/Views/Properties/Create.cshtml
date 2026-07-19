@@ -1,0 +1,56 @@
+@model Albatros.Models.Property
+@{ ViewData["Title"] = "Add Property"; }
+
+<h2 style="font-family:'Playfair Display',serif;">List a New Property</h2>
+<p class="text-muted">This listing will be published under your account.</p>
+
+<form asp-controller="Properties" asp-action="Create" method="post" class="mt-4" style="max-width:640px;">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input asp-for="Title" class="form-control" placeholder="e.g. Al Narjis Villa Residence" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe the property..."></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">City</label>
+            <input asp-for="City" class="form-control" placeholder="Riyadh" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Price (SAR)</label>
+            <input asp-for="Price" type="number" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Bedrooms</label>
+            <input asp-for="Bedrooms" type="number" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Bathrooms</label>
+            <input asp-for="Bathrooms" type="number" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Area (m²)</label>
+            <input asp-for="Area" type="number" step="0.01" class="form-control" />
+        </div>
+    </div>
+
+    <p class="text-muted small">
+        Note: image upload isn't wired into this form yet -- properties will show a placeholder photo
+        until images are added (via <code>PropertyImage</code> records) or an upload field is added here.
+    </p>
+
+    <button type="submit" class="btn text-white" style="background:#9C2A2A;">Publish Property</button>
+    <a href="/Properties/MyProperties" class="btn btn-outline-secondary">Cancel</a>
+</form>

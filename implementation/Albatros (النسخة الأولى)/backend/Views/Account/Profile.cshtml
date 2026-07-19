@@ -1,0 +1,23 @@
+@model Albatros.Models.ApplicationUser
+@{ ViewData["Title"] = "My Profile"; }
+
+<h2 style="font-family:'Playfair Display',serif;">My Profile</h2>
+
+<dl class="row" style="max-width:480px;">
+    <dt class="col-sm-4">Name</dt>
+    <dd class="col-sm-8">@Model.FullName</dd>
+    <dt class="col-sm-4">Email</dt>
+    <dd class="col-sm-8">@Model.Email</dd>
+    <dt class="col-sm-4">Phone</dt>
+    <dd class="col-sm-8">@Model.PhoneNumber</dd>
+    <dt class="col-sm-4">Account Type</dt>
+    <dd class="col-sm-8"><span class="badge bg-info text-dark">@Model.UserType</span></dd>
+</dl>
+
+<a href="/Account/EditProfile" class="btn text-white" style="background:#9C2A2A;">Edit Profile</a>
+@if (Model.UserType == "Seller")
+{
+    <a href="/Properties/MyProperties" class="btn btn-outline-dark">My Properties</a>
+}
+<a href="/VisitRequests" class="btn btn-outline-dark">My Viewing Requests</a>
+<a href="/Favorites" class="btn btn-outline-dark">My Favorites</a>

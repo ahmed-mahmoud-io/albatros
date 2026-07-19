@@ -1,0 +1,103 @@
+@model IEnumerable<Albatros.Models.Favorite>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Favorites | ALBATROS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@@500;600;700;800&family=Inter:wght@@400;500;600;700&family=Cairo:wght@@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon:#9C2A2A; --maroon-dark:#7A2020; --black:#0A0A0A; --white:#FFFFFF;
+    --gray-bg:#F8F8F8; --gray-mid:#E4E1DC; --text-muted:#8A8580;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--white);color:var(--black);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Playfair Display',serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+  header{background:var(--black);border-bottom:1px solid #1c1c1c;}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;height:78px;}
+  .logo{color:var(--white);font-size:22px;font-weight:700;letter-spacing:2px;display:flex;align-items:center;gap:10px;}
+  nav{display:flex;gap:38px;}
+  nav a{color:#C9C6C1;font-size:14.5px;font-weight:500;}
+  nav a:hover{color:var(--white);}
+  .btn{font-size:13.5px;font-weight:600;padding:10px 20px;border-radius:6px;cursor:pointer;border:1px solid transparent;}
+  .btn-maroon{background:var(--maroon);color:var(--white);}
+  .page-head{background:var(--gray-bg);padding:44px 0 40px;}
+  .page-head h1{font-size:34px;font-weight:700;margin-bottom:10px;}
+  .page-head p{color:#5A5A5A;font-size:15px;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:44px 0 80px;}
+  .p-card{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 12px 30px -18px rgba(0,0,0,0.15);border:1px solid #EFEDE9;}
+  .p-img{height:170px;background-size:cover;background-position:center;position:relative;}
+  .p-body{padding:18px 20px 20px;}
+  .p-price{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--maroon);margin-bottom:6px;}
+  .p-title{font-size:15px;font-weight:600;margin-bottom:4px;}
+  .p-loc{font-size:12.5px;color:var(--text-muted);margin-bottom:14px;}
+  .row{display:flex;gap:10px;margin-top:14px;}
+  .row a, .row button{flex:1;text-align:center;padding:10px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--gray-mid);background:var(--white);}
+  .row .view-btn{background:var(--maroon);color:var(--white);border:none;}
+  .empty-state{display:flex;flex-direction:column;align-items:center;text-align:center;padding:90px 20px;}
+  .empty-state h3{font-size:20px;font-weight:700;margin-bottom:10px;}
+  .empty-state p{color:var(--text-muted);font-size:14px;margin-bottom:26px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <div class="logo">ALBATROS</div>
+    <nav>
+      <a href="/#features">Features</a>
+      <a href="/Properties">Properties</a>
+      <a href="/Favorites">Favorites</a>
+      <a href="/Home/Contact">Contact</a>
+    </nav>
+    <a href="/" class="btn btn-maroon">Back Home</a>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <h1>My Favorites</h1>
+    <p>Properties you've saved for later.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  @if (Model != null && Model.Any())
+  {
+    <div class="grid">
+      @foreach (var f in Model)
+      {
+        var p = f.Property;
+        var img = (p?.Images != null && p.Images.Any()) ? p.Images.First().ImageUrl : "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800&auto=format&fit=crop";
+        <div class="p-card">
+          <div class="p-img" style="background-image:url('@img');"></div>
+          <div class="p-body">
+            <div class="p-price">@(p?.Price.ToString("N0")) SAR</div>
+            <div class="p-title">@p?.Title</div>
+            <div class="p-loc">@p?.City</div>
+            <div class="row">
+              <a class="view-btn" href="/Properties/Details/@p?.PropertyId">View Details</a>
+              <a href="/Favorites/Remove/@f.FavoriteId">Remove</a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+  else
+  {
+    <div class="empty-state">
+      <h3>No favorites yet</h3>
+      <p>Tap "Save to Favorites" on any property to see it here.</p>
+      <a href="/Properties" class="btn btn-maroon">Browse Properties</a>
+    </div>
+  }
+</div>
+
+</body>
+</html>

@@ -1,0 +1,237 @@
+@{
+    var userId = Context.Session.GetInt32("UserId");
+    var fullName = Context.Session.GetString("FullName");
+    var role = Context.Session.GetString("Role");
+    var profilePic = Context.Session.GetString("ProfilePictureUrl");
+    var isLoggedIn = userId != null;
+    var unreadCount = 0;
+    if (isLoggedIn)
+    {
+        var db = Context.RequestServices.GetRequiredService<Albatros.Data.AppDbContext>();
+        unreadCount = db.Notifications.Count(n => n.UserId == userId.Value && !n.IsRead);
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - ALBATROS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>@@keyframes _bank{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}@@keyframes _wingL{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.35)}}@@keyframes _wingR{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.35)}}</style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+@if (ViewBag.ShowSplash == true)
+{
+<div id="splash">
+  <div class="splash-inner">
+    <div class="splash-lockup">
+      <svg class="splash-bird" viewBox="0 0 48 48" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+        <g class="bird-fly-splash">
+          <path class="s-wing s-wing-l" d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="#FFFFFF"/>
+          <path class="s-wing s-wing-r" d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="#FFFFFF"/>
+          <path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="rgba(255,255,255,0.7)"/>
+        </g>
+      </svg>
+      <div class="splash-word">ALBATROS</div>
+    </div>
+    <div class="splash-tag" data-i18n="hero_eyebrow">Riyadh · Jeddah · Dammam</div>
+  </div>
+  <div class="splash-skip" data-i18n="splash_skip">Click to skip</div>
+</div>
+}
+
+<header>
+  <div class="wrap header-inner">
+    <a asp-controller="Home" asp-action="Index" class="logo">
+      <svg viewBox="0 0 64 34" width="52" height="28" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+        <g style="transform-origin: 32px 18px; animation: _bank 3.4s ease-in-out infinite;">
+          <path d="M31.5 19C21 8.6 9.2 8.3 2.5 13.2C9.5 14.6 18.9 16.4 31.5 19Z" fill="#9C2A2A" style="transform-box: fill-box; transform-origin: right center; animation: _wingL 1.05s cubic-bezier(0.37,0,0.63,1) infinite;"/>
+          <path d="M32.5 19C43 8.6 54.8 8.3 61.5 13.2C54.5 14.6 45.1 16.4 32.5 19Z" fill="#9C2A2A" style="transform-box: fill-box; transform-origin: left center; animation: _wingR 1.05s cubic-bezier(0.37,0,0.63,1) infinite;"/>
+          <path d="M23.5 18.8C26.4 15.2 29.3 13.5 32 13.5C34.8 13.5 37.7 15.2 40.5 18.8C38.1 21.5 35.2 22.8 32 22.8C28.8 22.8 25.9 21.5 23.5 18.8Z" fill="#7A2020"/>
+          <ellipse cx="32" cy="10.2" rx="4.6" ry="3.4" fill="#7A2020"/>
+        </g>
+      </svg>ALBATROS
+    </a>
+    <nav>
+      <a asp-controller="Home" asp-action="Index" asp-fragment="features" data-i18n="nav_features">Features</a>
+      <a asp-controller="Properties" asp-action="Index" data-i18n="nav_properties">Properties</a>
+      @if (isLoggedIn)
+      {
+        <a asp-controller="Favorites" asp-action="Index" data-i18n="nav_favorites">Favorites</a>
+      }
+      @if (role != "Admin")
+      {
+        <a asp-controller="Home" asp-action="Contact" data-i18n="nav_contact">Contact</a>
+      }
+      @if (role == "Owner" || role == "Admin")
+      {
+        <a asp-controller="Properties" asp-action="MyProperties">My Properties</a>
+      }
+      @if (role == "Admin")
+      {
+        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+      }
+    </nav>
+    <div class="header-actions">
+      <div class="lang" id="langToggle" role="button" tabindex="0">
+        <span id="langLabel">EN</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#C9C6C1" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </div>
+      @if (isLoggedIn)
+      {
+        @if (role != "Admin")
+        {
+          <a asp-controller="Notifications" asp-action="Index" style="position:relative; display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9C6C1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            @if (unreadCount > 0)
+            {
+              <span style="position:absolute; top:-2px; right:-2px; background:#9C2A2A; color:white; font-size:10px; font-weight:700; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center;">@unreadCount</span>
+            }
+          </a>
+        }
+        <a asp-controller="Account" asp-action="Profile" class="btn btn-ghost" style="display:flex; align-items:center; gap:8px;">
+          <span style="width:26px;height:26px;border-radius:50%;background:#9C2A2A;color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;flex-shrink:0;">
+            @if (!string.IsNullOrEmpty(profilePic))
+            {
+              <img src="@profilePic" style="width:100%;height:100%;object-fit:cover;" />
+            }
+            else
+            {
+              @(string.IsNullOrEmpty(fullName) ? "U" : fullName.Substring(0, 1).ToUpper())
+            }
+          </span>
+          @fullName
+        </a>
+        <a asp-controller="Account" asp-action="Logout" class="btn btn-maroon">Logout</a>
+      }
+      else
+      {
+        <a asp-controller="Account" asp-action="Login" class="btn btn-ghost" data-i18n="nav_login">Login</a>
+        <a asp-controller="Account" asp-action="Register" class="btn btn-maroon" data-i18n="nav_signup">Sign up</a>
+      }
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <div class="mobile-nav-inner">
+      <nav class="mobile-links">
+        <a asp-controller="Home" asp-action="Index" asp-fragment="features" data-i18n="nav_features">Features</a>
+        <a asp-controller="Properties" asp-action="Index" data-i18n="nav_properties">Properties</a>
+        @if (isLoggedIn)
+        {
+          <a asp-controller="Favorites" asp-action="Index" data-i18n="nav_favorites">Favorites</a>
+        }
+        @if (role != "Admin")
+        {
+          <a asp-controller="Home" asp-action="Contact" data-i18n="nav_contact">Contact</a>
+        }
+        @if (role == "Owner" || role == "Admin")
+        {
+          <a asp-controller="Properties" asp-action="MyProperties">My Properties</a>
+        }
+        @if (role == "Admin")
+        {
+          <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+        }
+      </nav>
+      <div class="mobile-actions">
+        @if (isLoggedIn)
+        {
+          @if (role != "Admin")
+          {
+            <a asp-controller="Notifications" asp-action="Index" class="btn btn-ghost" style="display:flex; align-items:center; gap:8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Notifications
+              @if (unreadCount > 0) { <span style="background:#9C2A2A; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px;">@unreadCount</span> }
+            </a>
+          }
+          <a asp-controller="Account" asp-action="Profile" class="btn btn-ghost" style="display:flex; align-items:center; gap:8px;">
+            <span style="width:26px;height:26px;border-radius:50%;background:#9C2A2A;color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;flex-shrink:0;">
+              @if (!string.IsNullOrEmpty(profilePic))
+              {
+                <img src="@profilePic" style="width:100%;height:100%;object-fit:cover;" />
+              }
+              else
+              {
+                @(string.IsNullOrEmpty(fullName) ? "U" : fullName.Substring(0, 1).ToUpper())
+              }
+            </span>
+            @fullName
+          </a>
+          <a asp-controller="Account" asp-action="Logout" class="btn btn-maroon">Logout</a>
+        }
+        else
+        {
+          <a asp-controller="Account" asp-action="Login" class="btn btn-ghost" data-i18n="nav_login">Login</a>
+          <a asp-controller="Account" asp-action="Register" class="btn btn-maroon" data-i18n="nav_signup">Sign up</a>
+        }
+      </div>
+    </div>
+  </div>
+</header>
+
+@RenderBody()
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo">
+          <svg viewBox="0 0 64 34" width="48" height="26" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+            <g style="transform-origin: 32px 18px; animation: _bank 3.4s ease-in-out infinite;">
+              <path d="M31.5 19C21 8.6 9.2 8.3 2.5 13.2C9.5 14.6 18.9 16.4 31.5 19Z" fill="#9C2A2A" style="transform-box: fill-box; transform-origin: right center; animation: _wingL 1.05s cubic-bezier(0.37,0,0.63,1) infinite;"/>
+              <path d="M32.5 19C43 8.6 54.8 8.3 61.5 13.2C54.5 14.6 45.1 16.4 32.5 19Z" fill="#9C2A2A" style="transform-box: fill-box; transform-origin: left center; animation: _wingR 1.05s cubic-bezier(0.37,0,0.63,1) infinite;"/>
+              <path d="M23.5 18.8C26.4 15.2 29.3 13.5 32 13.5C34.8 13.5 37.7 15.2 40.5 18.8C38.1 21.5 35.2 22.8 32 22.8C28.8 22.8 25.9 21.5 23.5 18.8Z" fill="#7A2020"/>
+              <ellipse cx="32" cy="10.2" rx="4.6" ry="3.4" fill="#7A2020"/>
+            </g>
+          </svg>ALBATROS
+        </div>
+        <p class="foot-desc" data-i18n="foot_desc">A premium real estate platform connecting buyers, sellers and investors across Saudi Arabia with verified, high-value properties.</p>
+        <div class="foot-social" style="margin-top:22px;"><a href="#">in</a><a href="#">X</a><a href="#">ig</a></div>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_links">Quick Links</h4>
+        <a asp-controller="Home" asp-action="Index" data-i18n="foot_home">Home</a>
+        <a asp-controller="Properties" asp-action="Index" data-i18n="nav_properties">Properties</a>
+        <a asp-controller="Home" asp-action="Index" asp-fragment="features" data-i18n="nav_features">Features</a>
+        @if (role != "Admin")
+        {
+          <a asp-controller="Home" asp-action="Contact" data-i18n="nav_contact">Contact</a>
+        }
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_support">Support</h4>
+        <a href="#" data-i18n="foot_help">Help Center</a>
+        <a asp-controller="Home" asp-action="Privacy" data-i18n="foot_terms">Terms of Service</a>
+        <a asp-controller="Home" asp-action="Privacy" data-i18n="foot_privacy">Privacy Policy</a>
+        <a href="#" data-i18n="foot_faq">FAQs</a>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_contact">Contact</h4>
+        <div class="foot-contact-item">✉️ hello@albatros.sa</div>
+        <div class="foot-contact-item">📞 +966 11 234 5678</div>
+        <div class="foot-contact-item">📍 <span data-i18n="foot_address">King Fahd Road, Riyadh, Saudi Arabia</span></div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span data-i18n="foot_rights">© 2026 ALBATROS. All rights reserved.</span>
+      <span data-i18n="foot_tagline">Designed for the Saudi real estate market</span>
+    </div>
+  </div>
+</footer>
+
+<script src="~/js/i18n.js" asp-append-version="true"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+@Html.AntiForgeryToken()
+</body>
+</html>

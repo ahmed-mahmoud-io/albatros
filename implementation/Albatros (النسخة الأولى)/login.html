@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | ALBATROS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon:#9C2A2A; --maroon-dark:#7A2020; --black:#0A0A0A; --white:#FFFFFF;
+    --gray-bg:#F8F8F8; --gray-mid:#E4E1DC; --text-muted:#8A8580;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--white);color:var(--black);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.display{font-family:'Playfair Display',serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+
+  header{background:var(--black);border-bottom:1px solid #1c1c1c;}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;height:78px;}
+  .logo{color:var(--white);font-size:22px;font-weight:700;letter-spacing:2px;display:flex;align-items:center;gap:10px;}
+  .logo-mark{width:34px;height:34px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;}
+  .logo-mark svg{overflow:visible;display:block;}
+  .logo-mark .wing{transform-origin:24px 24px;transform-box:fill-box;animation:wingFlap 1.5s ease-in-out both;}
+  .logo-mark .wing-r{animation-name:wingFlapR;}
+  .logo-mark .bird-fly{transform-origin:24px 24px;animation:flyIn 1.5s cubic-bezier(.3,1.15,.6,1) both;}
+  @keyframes flyIn{
+    0%{transform:translate(120px,-70px) rotate(28deg) scale(.5);opacity:0;}
+    18%{opacity:1;}
+    55%{transform:translate(-14px,10px) rotate(-8deg) scale(1.08);}
+    78%{transform:translate(4px,-3px) rotate(4deg) scale(.97);}
+    100%{transform:translate(0,0) rotate(0deg) scale(1);}
+  }
+  @keyframes wingFlap{
+    0%{transform:scaleY(1);} 20%{transform:scaleY(.35);} 40%{transform:scaleY(1);}
+    60%{transform:scaleY(.35);} 80%{transform:scaleY(.9);} 100%{transform:scaleY(.2);}
+  }
+  @keyframes wingFlapR{
+    0%{transform:scaleY(1);} 20%{transform:scaleY(.35);} 40%{transform:scaleY(1);}
+    60%{transform:scaleY(.35);} 80%{transform:scaleY(.9);} 100%{transform:scaleY(.2);}
+  }
+  nav{display:flex;gap:38px;}
+  nav a{color:#C9C6C1;font-size:14.5px;font-weight:500;transition:color .2s;}
+  nav a:hover{color:var(--white);}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .btn{font-size:13.5px;font-weight:600;padding:10px 20px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .2s;white-space:nowrap;}
+  .btn-ghost{background:#1C1C1C;color:#E8E6E3;border:1px solid #313131;}
+  .btn-ghost:hover{background:#262626;}
+  .btn-maroon{background:var(--maroon);color:var(--white);}
+  .btn-maroon:hover{background:var(--maroon-dark);}
+  .btn-full{width:100%;text-align:center;}
+  .lang{display:flex;align-items:center;gap:6px;color:#C9C6C1;font-size:13.5px;font-weight:500;padding:8px 12px;border-radius:6px;cursor:pointer;border:1px solid #313131;}
+  .lang:hover{background:#1C1C1C;}
+
+  /* auth layout */
+  .auth-section{
+    min-height:calc(100vh - 78px);
+    display:grid;grid-template-columns:1fr 1fr;
+  }
+  .auth-visual{
+    background:linear-gradient(155deg, var(--maroon) 0%, var(--maroon-dark) 100%);
+    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:70px;color:var(--white);
+  }
+  .auth-visual::before{
+    content:"";position:absolute;width:420px;height:420px;border-radius:50%;
+    border:1px solid rgba(255,255,255,0.12);top:-140px;right:-120px;
+  }
+  .auth-visual::after{
+    content:"";position:absolute;width:280px;height:280px;border-radius:50%;
+    border:1px solid rgba(255,255,255,0.1);bottom:-100px;left:-80px;
+  }
+  .auth-visual .big-mark{width:64px;height:64px;margin-bottom:32px;position:relative;z-index:2;}
+  .auth-visual h2{font-size:32px;font-weight:700;line-height:1.25;margin-bottom:18px;position:relative;z-index:2;max-width:380px;}
+  .auth-visual p{font-size:14.5px;color:rgba(255,255,255,0.82);line-height:1.7;max-width:360px;position:relative;z-index:2;}
+  .auth-stats{display:flex;gap:36px;margin-top:44px;position:relative;z-index:2;}
+  .auth-stats div .n{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;}
+  .auth-stats div .l{font-size:11.5px;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:.4px;}
+
+  .auth-form-side{display:flex;align-items:center;justify-content:center;padding:60px 40px;}
+  .auth-box{width:100%;max-width:380px;}
+  .auth-box h1{font-size:28px;font-weight:700;margin-bottom:8px;}
+  .auth-box .sub{color:var(--text-muted);font-size:14px;margin-bottom:32px;}
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:#5A5A5A;margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px;}
+  .field input{
+    width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--gray-mid);
+    background:var(--gray-bg);font-size:14px;font-family:'Inter',sans-serif;color:var(--black);
+  }
+  .field input:focus{outline:2px solid var(--maroon);outline-offset:1px;}
+  .row-between{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;font-size:13px;}
+  .checkbox-line{display:flex;align-items:center;gap:8px;color:#5A5A5A;}
+  .checkbox-line input{width:auto;}
+  .fp-link{color:var(--maroon);font-weight:600;}
+  .fp-link:hover{text-decoration:underline;}
+  .divider{display:flex;align-items:center;gap:14px;margin:26px 0;color:var(--text-muted);font-size:12.5px;}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--gray-mid);}
+  .social-row{display:flex;gap:12px;margin-bottom:26px;}
+  .social-btn{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:11px;border-radius:8px;border:1px solid var(--gray-mid);
+    font-size:13px;font-weight:600;color:#4A4A4A;cursor:pointer;background:var(--white);
+  }
+  .social-btn:hover{background:var(--gray-bg);}
+  .switch-line{text-align:center;font-size:13.8px;color:#5A5A5A;}
+  .switch-line a{color:var(--maroon);font-weight:600;}
+  .switch-line a:hover{text-decoration:underline;}
+
+  @media(max-width:900px){
+    .auth-section{grid-template-columns:1fr;}
+    .auth-visual{display:none;}
+    nav{display:none;}
+  }
+
+  html[dir="rtl"] body{font-family:'Cairo',sans-serif;}
+  html[dir="rtl"] h1,html[dir="rtl"] h2,html[dir="rtl"] .n{font-family:'Cairo',sans-serif;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <div class="logo">
+      <span class="logo-mark bird-logo">
+        <svg viewBox="0 0 48 48" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+          <g class="bird-fly">
+            <path class="wing wing-l" d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="#9C2A2A"/>
+            <path class="wing wing-r" d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="#9C2A2A"/>
+            <path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="#7A2020"/>
+          </g>
+        </svg>
+      </span>
+      ALBATROS
+    </div>
+    <nav>
+      <a href="index.html#features" data-i18n="nav_features">Features</a>
+      <a href="properties.html" data-i18n="nav_properties">Properties</a>
+      <a href="favorites.html" data-i18n="nav_favorites">Favorites</a>
+      <a href="contact.html" data-i18n="nav_contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang" id="langToggle" role="button" tabindex="0">
+        <span id="langLabel">EN</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#C9C6C1" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </div>
+      <a href="register.html" class="btn btn-maroon" data-i18n="nav_signup">Sign up</a>
+    </div>
+  </div>
+</header>
+
+<div class="auth-section">
+  <div class="auth-visual">
+    <div class="big-mark">
+      <svg viewBox="0 0 48 48" width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="rgba(255,255,255,0.85)"/>
+        <path d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="rgba(255,255,255,0.85)"/>
+        <path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="rgba(255,255,255,0.6)"/>
+      </svg>
+    </div>
+    <h2 data-i18n="auth_visual_h">Your next property is one login away.</h2>
+    <p data-i18n="auth_visual_p">Access saved searches, book viewings, and message advisors directly from your ALBATROS account.</p>
+    <div class="auth-stats">
+      <div><div class="n">2,500+</div><div class="l" data-i18n="stat1">Properties Available</div></div>
+      <div><div class="n">12,000+</div><div class="l" data-i18n="stat2">Happy Customers</div></div>
+    </div>
+  </div>
+
+  <div class="auth-form-side">
+    <div class="auth-box">
+      <h1 data-i18n="login_h">Welcome back</h1>
+      <p class="sub" data-i18n="login_sub">Log in to manage your properties and viewings.</p>
+
+      <form onsubmit="return false;">
+        <div class="field">
+          <label data-i18n="c_email">Email Address</label>
+          <input type="email" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label data-i18n="login_pass">Password</label>
+          <input type="password" placeholder="••••••••">
+        </div>
+        <div class="row-between">
+          <label class="checkbox-line"><input type="checkbox"><span data-i18n="login_remember">Remember me</span></label>
+          <a href="#" class="fp-link" data-i18n="login_forgot">Forgot password?</a>
+        </div>
+        <button class="btn btn-maroon btn-full" style="padding:13px;" data-i18n="login_btn">Log In</button>
+      </form>
+
+      <div class="divider" data-i18n="login_or">or continue with</div>
+      <div class="social-row">
+        <button class="social-btn">Google</button>
+        <button class="social-btn">Apple</button>
+      </div>
+
+      <div class="switch-line">
+        <span data-i18n="login_noaccount">Don't have an account?</span>
+        <a href="register.html" data-i18n="login_signup_link">Sign up</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+@model Albatros.Models.ViewModels.LoginViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="login_title">Login - ALBATROS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --maroon: #9C2A2A;
+            --maroon-dark: #7A2020;
+            --black: #0A0A0A;
+            --white: #FFFFFF;
+            --gray-bg: #F8F8F8;
+            --gray-mid: #E4E1DC;
+            --text-muted: #8A8580;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Cairo', sans-serif; }
+        body { background: var(--white); color: var(--black); min-height: 100vh; display: flex; }
+        .auth-section { width: 100%; min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+        .auth-visual {
+            background: linear-gradient(155deg, var(--maroon), var(--maroon-dark));
+            color: white;
+            padding: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-visual h1 { font-family: 'Playfair Display', serif; font-size: 42px; line-height: 1.2; margin-top: 40px; }
+        .auth-visual p { font-size: 16px; opacity: 0.85; margin-top: 16px; max-width: 400px; line-height: 1.6; }
+        .auth-form-side { display: flex; align-items: center; justify-content: center; padding: 60px 40px; }
+        .auth-box { width: 100%; max-width: 400px; }
+        .auth-box h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .auth-box .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; }
+        .field { margin-bottom: 20px; }
+        .field label { display: block; font-size: 12px; font-weight: 600; color: #5A5A5A; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .field input { width: 100%; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--gray-mid); background: var(--gray-bg); font-size: 14px; transition: all 0.2s; }
+        .field input:focus { border-color: var(--maroon); background: var(--white); outline: none; box-shadow: 0 0 0 3px rgba(156, 42, 42, 0.1); }
+        .btn-maroon { width: 100%; padding: 14px; background: var(--maroon); color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
+        .btn-maroon:hover { background: var(--maroon-dark); }
+        .alert-error { background: #FFEBEE; color: #C62828; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; border: 1px solid #FFCDD2; }
+        .auth-links { margin-top: 24px; text-align: center; font-size: 14px; color: var(--text-muted); }
+        .auth-links a { color: var(--maroon); text-decoration: none; font-weight: 600; }
+        .auth-links a:hover { text-decoration: underline; }
+        .remember-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; font-size: 13px; }
+        .remember-row label { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #5A5A5A; font-weight: 500; text-transform: none; }
+        .remember-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--maroon); }
+        .logo-bird { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 20px; letter-spacing: 2px; }
+        @@media (max-width: 900px) {
+            .auth-section { grid-template-columns: 1fr; }
+            .auth-visual { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-section">
+        <div class="auth-visual">
+            <div>
+                <div class="logo-bird">
+                    <svg viewBox="0 0 48 48" width="36" height="36"><path d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="rgba(255,255,255,0.9)"/><path d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="rgba(255,255,255,0.9)"/><path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="rgba(255,255,255,0.6)"/></svg>
+                    ALBATROS
+                </div>
+                <h1 data-i18n="auth_hero_title">Find a home that understands your ambition.</h1>
+                <p data-i18n="auth_hero_sub">Experience Saudi Arabia's premier real estate platform offering verified luxury residences and commercial spaces.</p>
+            </div>
+            <div style="font-size: 13px; opacity: 0.6;">&copy; 2026 ALBATROS Real Estate. All rights reserved.</div>
+        </div>
+        <div class="auth-form-side">
+            <div class="auth-box">
+                <h2 data-i18n="welcome_back">Welcome Back</h2>
+                <div class="subtitle" data-i18n="login_subtitle">Please enter your details to sign in</div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert-error">@ViewBag.Error</div>
+                }
+
+                <form asp-controller="Account" asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="field">
+                        <label asp-for="Email" data-i18n="email">Email Address</label>
+                        <input asp-for="Email" type="email" placeholder="name@example.com" required />
+                    </div>
+                    <div class="field">
+                        <label asp-for="Password" data-i18n="password">Password</label>
+                        <input asp-for="Password" type="password" placeholder="••••••••" required />
+                    </div>
+                    <div class="remember-row">
+                        <label>
+                            <input asp-for="RememberMe" type="checkbox" />
+                            <span data-i18n="remember_me">Remember me</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-maroon" data-i18n="sign_in">Sign In</button>
+                </form>
+
+                <div class="auth-links">
+                    <span data-i18n="no_account">Don't have an account?</span> 
+                    <a asp-controller="Account" asp-action="Register" data-i18n="create_account">Create Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/js/i18n.js"></script>
+</body>
+</html>

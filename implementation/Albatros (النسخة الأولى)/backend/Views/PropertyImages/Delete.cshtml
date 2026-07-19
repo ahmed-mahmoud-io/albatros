@@ -1,0 +1,11 @@
+@model Albatros.Models.PropertyImage
+@{ ViewData["Title"] = "Delete Image"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Delete Image</h2>
+<img src="@Model.ImageUrl" style="max-width:280px;border-radius:8px;" class="mb-3 d-block" />
+
+<form asp-controller="PropertyImages" asp-action="Delete" asp-route-id="@Model.ImageId" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="/PropertyImages?propertyId=@Model.PropertyId" class="btn btn-outline-secondary">Cancel</a>
+</form>

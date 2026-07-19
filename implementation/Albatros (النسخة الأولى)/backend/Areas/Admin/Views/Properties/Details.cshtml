@@ -1,0 +1,27 @@
+@model Albatros.Models.Property
+@{ ViewData["Title"] = "Property Details"; }
+
+<h2 style="font-family:'Playfair Display',serif;">@Model.Title</h2>
+
+<dl class="row" style="max-width:600px;">
+    <dt class="col-sm-4">Owner</dt>
+    <dd class="col-sm-8">@Model.User?.FullName (@Model.User?.Email)</dd>
+
+    <dt class="col-sm-4">City</dt>
+    <dd class="col-sm-8">@Model.City</dd>
+
+    <dt class="col-sm-4">Price</dt>
+    <dd class="col-sm-8">@Model.Price.ToString("N0") SAR</dd>
+
+    <dt class="col-sm-4">Bed / Bath / Area</dt>
+    <dd class="col-sm-8">@Model.Bedrooms bd &middot; @Model.Bathrooms ba &middot; @Model.Area m²</dd>
+
+    <dt class="col-sm-4">Status</dt>
+    <dd class="col-sm-8"><span class="badge bg-secondary">@Model.Status</span></dd>
+
+    <dt class="col-sm-4">Description</dt>
+    <dd class="col-sm-8">@Model.Description</dd>
+</dl>
+
+<a href="/Admin/Properties/Edit/@Model.PropertyId" class="btn btn-outline-primary">Edit</a>
+<a href="/Admin/Properties" class="btn btn-outline-secondary">Back</a>

@@ -1,0 +1,11 @@
+@model Albatros.Models.ApplicationUser
+@{ ViewData["Title"] = "Delete User"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Delete User</h2>
+<p>Are you sure you want to delete <strong>@Model.FullName</strong>?</p>
+
+<form asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@Model.UserId" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="/Admin/Users" class="btn btn-outline-secondary">Cancel</a>
+</form>

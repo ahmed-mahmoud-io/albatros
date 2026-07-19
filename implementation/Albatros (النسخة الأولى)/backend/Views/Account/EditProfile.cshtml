@@ -1,0 +1,31 @@
+@model Albatros.Models.ApplicationUser
+@{ ViewData["Title"] = "Edit Profile"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Edit Profile</h2>
+
+<form asp-controller="Account" asp-action="EditProfile" method="post" style="max-width:480px;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="Role" />
+    <input type="hidden" asp-for="UserType" />
+
+    <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input asp-for="FullName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Phone</label>
+        <input asp-for="PhoneNumber" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">New Password (leave blank to keep current)</label>
+        <input asp-for="Password" type="password" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn text-white" style="background:#9C2A2A;">Save Changes</button>
+    <a href="/Account/Profile" class="btn btn-outline-secondary">Cancel</a>
+</form>

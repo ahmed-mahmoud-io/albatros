@@ -1,0 +1,17 @@
+@model Albatros.Models.Review
+@{ ViewData["Title"] = "Review Details"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Review Details</h2>
+
+<dl class="row" style="max-width:520px;">
+    <dt class="col-sm-4">Property</dt>
+    <dd class="col-sm-8">@Model.Property?.Title</dd>
+    <dt class="col-sm-4">By</dt>
+    <dd class="col-sm-8">@Model.User?.FullName</dd>
+    <dt class="col-sm-4">Rating</dt>
+    <dd class="col-sm-8">@Model.Rating ★</dd>
+    <dt class="col-sm-4">Comment</dt>
+    <dd class="col-sm-8">@Model.Comment</dd>
+</dl>
+
+<a href="/Admin/Reviews" class="btn btn-outline-secondary">Back</a>

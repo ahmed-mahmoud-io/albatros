@@ -1,0 +1,32 @@
+@model IEnumerable<Albatros.Models.VisitRequest>
+@{ ViewData["Title"] = "Visit Requests"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Visit Requests</h2>
+
+<table class="table align-middle mt-3">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Requested By</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Property?.Title</td>
+                <td>@r.User?.FullName</td>
+                <td>@r.VisitDate.ToString("MMM d, yyyy h:mm tt")</td>
+                <td><span class="badge bg-secondary">@r.Status</span></td>
+                <td>
+                    <a href="/Admin/VisitRequests/Approve/@r.RequestId" class="btn btn-sm btn-outline-success">Approve</a>
+                    <a href="/Admin/VisitRequests/Reject/@r.RequestId" class="btn btn-sm btn-outline-warning">Reject</a>
+                    <a href="/Admin/VisitRequests/Delete/@r.RequestId" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

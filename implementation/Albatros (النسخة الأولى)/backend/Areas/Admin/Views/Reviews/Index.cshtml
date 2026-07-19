@@ -1,0 +1,31 @@
+@model IEnumerable<Albatros.Models.Review>
+@{ ViewData["Title"] = "Manage Reviews"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Manage Reviews</h2>
+
+<table class="table align-middle mt-3">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>By</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Property?.Title</td>
+                <td>@r.User?.FullName</td>
+                <td>@r.Rating ★</td>
+                <td>@r.Comment</td>
+                <td>
+                    <a href="/Admin/Reviews/Details/@r.ReviewId" class="btn btn-sm btn-outline-secondary">Details</a>
+                    <a href="/Admin/Reviews/Delete/@r.ReviewId" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

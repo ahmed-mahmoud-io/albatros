@@ -1,0 +1,31 @@
+@model IEnumerable<Albatros.Models.ApplicationUser>
+@{ ViewData["Title"] = "Manage Users"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Manage Users</h2>
+
+<table class="table align-middle mt-3">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Type</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.FullName</td>
+                <td>@u.Email</td>
+                <td><span class="badge bg-info text-dark">@u.UserType</span></td>
+                <td><span class="badge bg-secondary">@u.Role</span></td>
+                <td>
+                    <a href="/Admin/Users/Details/@u.UserId" class="btn btn-sm btn-outline-secondary">Details</a>
+                    <a href="/Admin/Users/Delete/@u.UserId" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

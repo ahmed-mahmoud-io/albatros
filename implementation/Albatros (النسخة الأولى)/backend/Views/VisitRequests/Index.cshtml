@@ -1,0 +1,36 @@
+@model IEnumerable<Albatros.Models.VisitRequest>
+@{ ViewData["Title"] = "My Viewing Requests"; }
+
+<h2 style="font-family:'Playfair Display',serif;">My Viewing Requests</h2>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.Property?.Title</td>
+                    <td>@r.VisitDate.ToString("MMM d, yyyy h:mm tt")</td>
+                    <td><span class="badge bg-secondary">@r.Status</span></td>
+                    <td>
+                        <a href="/VisitRequests/Details/@r.RequestId" class="btn btn-sm btn-outline-secondary">Details</a>
+                        <a href="/VisitRequests/Delete/@r.RequestId" class="btn btn-sm btn-outline-danger">Cancel</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-muted">You haven't requested any viewings yet.</p>
+}

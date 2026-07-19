@@ -1,0 +1,191 @@
+@model Albatros.Models.Property
+@{
+    ViewData["Title"] = Model.Title;
+    var isFavorited = ViewBag.IsFavorited != null && (bool)ViewBag.IsFavorited;
+    var userId = Context.Session.GetInt32("UserId");
+    var related = ViewBag.RelatedProperties as List<Albatros.Models.Property> ?? new List<Albatros.Models.Property>();
+    var avgRating = ViewBag.AverageRating != null ? (double)ViewBag.AverageRating : 0;
+}
+
+@section Styles {
+<style>
+    .details-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; margin-top: 30px; }
+    .gallery-main { width: 100%; height: 460px; border-radius: 16px; background-size: cover; background-position: center; position: relative; margin-bottom: 16px; }
+    .gallery-thumbs { display: flex; gap: 12px; overflow-x: auto; }
+    .thumb-item { width: 90px; height: 65px; border-radius: 8px; background-size: cover; background-position: center; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; flex-shrink: 0; }
+    .thumb-item:hover { border-color: var(--maroon); }
+    .prop-card-box { background: white; border-radius: 16px; padding: 32px; border: 1px solid #EFEDE9; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 24px; }
+    .prop-price-big { font-size: 32px; font-weight: 700; color: var(--maroon); font-family: 'Playfair Display', serif; }
+    .specs-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; padding: 20px; background: var(--gray-bg); border-radius: 12px; }
+    .spec-box { text-align: center; }
+    .spec-num { font-size: 20px; font-weight: 700; color: var(--black); }
+    .spec-lbl { font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+    .review-item { padding: 20px 0; border-bottom: 1px solid #EFEDE9; }
+    .review-item:last-child { border-bottom: none; }
+    .stars { color: #FFB300; font-size: 16px; }
+    @@media (max-width: 900px) { .details-grid { grid-template-columns: 1fr; } }
+</style>
+}
+
+<div class="wrap" style="padding: 30px 0 60px;">
+    <!-- BREADCRUMB -->
+    <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+        <a asp-controller="Home" asp-action="Index" style="color: inherit; text-decoration: none;">Home</a> / 
+        <a asp-controller="Properties" asp-action="Index" style="color: inherit; text-decoration: none;">Properties</a> / 
+        <span style="color: var(--black);">@Model.Title</span>
+    </div>
+
+    <!-- GALLERY -->
+    @{
+        var mainImg = Model.Images?.FirstOrDefault()?.ImageUrl ?? "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=1200&auto=format&fit=crop";
+    }
+    <div class="gallery-main" id="mainImage" style="background-image: url('@mainImg');">
+        <span class="p-tag" style="position: absolute; top: 20px; left: 20px;">@Model.City</span>
+    </div>
+    @if (Model.Images != null && Model.Images.Count > 1)
+    {
+        <div class="gallery-thumbs">
+            @foreach (var img in Model.Images)
+            {
+                <div class="thumb-item" style="background-image: url('@img.ImageUrl');" onclick="document.getElementById('mainImage').style.backgroundImage = 'url(\'@img.ImageUrl\')'"></div>
+            }
+        </div>
+    }
+
+    <!-- CONTENT GRID -->
+    <div class="details-grid">
+        <div class="details-left">
+            <div class="prop-card-box">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">
+                    <div>
+                        <h1 style="font-size:30px; font-family:'Playfair Display',serif; margin-bottom:8px;">@Model.Title</h1>
+                        <div style="color:var(--text-muted); font-size:15px;">📍 @Model.City</div>
+                    </div>
+                    <div>
+                        <div class="prop-price-big">@Model.Price.ToString("N0") <span style="font-size:16px;">SAR</span></div>
+                    </div>
+                </div>
+
+                <div class="specs-row">
+                    <div class="spec-box">
+                        <div class="spec-num">@Model.Bedrooms</div>
+                        <div class="spec-lbl" data-i18n="beds">Bedrooms</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-num">@Model.Bathrooms</div>
+                        <div class="spec-lbl" data-i18n="baths">Bathrooms</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-num">@Model.Area m²</div>
+                        <div class="spec-lbl" data-i18n="area">Total Area</div>
+                    </div>
+                </div>
+
+                <h3 style="font-size:20px; margin:28px 0 12px; font-family:'Playfair Display',serif;" data-i18n="desc">Description</h3>
+                <p style="color:var(--text-muted); line-height:1.8; font-size:15px; white-space:pre-line;">
+                    @Model.Description
+                </p>
+
+                <div style="margin-top:30px; padding-top:20px; border-top:1px solid #EFEDE9; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:14px; color:var(--text-muted);">
+                        Listed by: <strong style="color:var(--black);">@(Model.User?.FullName ?? "ALBATROS Agent")</strong>
+                    </div>
+                    <div style="font-size:13px; color:var(--text-muted);">
+                        Added on @Model.CreatedAt.ToString("MMM dd, yyyy")
+                    </div>
+                </div>
+            </div>
+
+            <!-- REVIEWS SECTION -->
+            <div class="prop-card-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <div>
+                        <h3 style="font-size:22px; font-family:'Playfair Display',serif;" data-i18n="reviews">Client Reviews</h3>
+                        @if (Model.Reviews != null && Model.Reviews.Any())
+                        {
+                            <div style="font-size:14px; color:var(--text-muted); margin-top:4px;">
+                                Average Rating: <span class="stars">★</span> <strong>@avgRating.ToString("F1")</strong> / 5.0 (@Model.Reviews.Count reviews)
+                            </div>
+                        }
+                    </div>
+                    @if (userId != null)
+                    {
+                        <a asp-controller="Reviews" asp-action="Create" asp-route-propertyId="@Model.PropertyId" class="btn btn-ghost" style="font-size:13px;" data-i18n="write_review">Write a Review</a>
+                    }
+                </div>
+
+                @if (Model.Reviews != null && Model.Reviews.Any())
+                {
+                    @foreach (var r in Model.Reviews.OrderByDescending(x => x.CreatedAt))
+                    {
+                        <div class="review-item">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <strong style="font-size:15px;">@(r.User?.FullName ?? "User")</strong>
+                                <span class="stars">@(new string('★', r.Rating))@(new string('☆', 5 - r.Rating))</span>
+                            </div>
+                            <p style="color:var(--text-muted); font-size:14px; line-height:1.6; margin-bottom:8px;">@r.Comment</p>
+                            <div style="font-size:12px; color:#A09C96;">@r.CreatedAt.ToString("MMM dd, yyyy")</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p style="color:var(--text-muted); font-size:14px;" data-i18n="no_reviews">No reviews have been written for this property yet.</p>
+                }
+            </div>
+        </div>
+
+        <!-- SIDEBAR ACTION CARD -->
+        <div class="details-right">
+            <div class="prop-card-box" style="position:sticky; top:100px;">
+                <h3 style="font-size:20px; margin-bottom:20px; font-family:'Playfair Display',serif;" data-i18n="actions_title">Interested in this property?</h3>
+
+                @if (userId != null)
+                {
+                    <a asp-controller="VisitRequests" asp-action="Create" asp-route-propertyId="@Model.PropertyId" class="btn btn-maroon" style="width:100%; padding:14px; margin-bottom:12px; text-align:center; display:block; text-decoration:none;" data-i18n="book_visit">Book a Private Viewing</a>
+
+                    <form asp-controller="Favorites" asp-action="Toggle" method="post" style="margin-bottom:16px;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="propertyId" value="@Model.PropertyId" />
+                        <button type="submit" class="btn @(isFavorited ? "btn-maroon" : "btn-ghost")" style="width:100%; padding:12px;">
+                            @(isFavorited ? "❤️ Remove from Favorites" : "🤍 Add to Favorites")
+                        </button>
+                    </form>
+
+                    @if (userId == Model.UserId)
+                    {
+                        <div style="margin-top:20px; padding-top:20px; border-top:1px solid #EFEDE9;">
+                            <div style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:12px; text-transform:uppercase;">Owner Actions</div>
+                            <div style="display:flex; gap:10px;">
+                                <a asp-controller="Properties" asp-action="Edit" asp-route-id="@Model.PropertyId" class="btn btn-ghost" style="flex:1; text-align:center;">Edit</a>
+                                <a asp-controller="Properties" asp-action="Delete" asp-route-id="@Model.PropertyId" class="btn" style="flex:1; text-align:center; background:#FFEBEE; color:#C62828;">Delete</a>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px; line-height:1.6;" data-i18n="login_req">Please sign in to schedule a visit or save this listing to your favorites.</p>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-maroon" style="width:100%; text-align:center; display:block; text-decoration:none;" data-i18n="sign_in">Sign In to Continue</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- RELATED PROPERTIES -->
+    @if (related.Any())
+    {
+        <div style="margin-top: 60px;">
+            <div class="eyebrow" data-i18n="related_eyebrow">SIMILAR LISTINGS</div>
+            <h2 style="font-size:28px; font-family:'Playfair Display',serif; margin-bottom:24px;" data-i18n="related_title">Properties You May Also Like</h2>
+            <div class="cards-strip">
+                <div class="cards-row">
+                    @foreach (var p in related)
+                    {
+                        @await Html.PartialAsync("_PropertyCard", p)
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

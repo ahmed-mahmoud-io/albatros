@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ALBATROS Admin Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Cairo', sans-serif; }
+        body { background: #F5F6FA; color: #0A0A0A; min-height: 100vh; }
+        .admin-wrapper { display: flex; min-height: 100vh; }
+        .data-table { display: table; overflow: visible; white-space: normal; } /* reset dead CSS */
+        .admin-sidebar {
+            width: 220px;
+            background: #0A0A0A;
+            color: white;
+            padding: 20px 14px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        .admin-sidebar .logo { font-size: 17px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 22px; color: white; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .admin-sidebar nav { display: flex; flex-direction: column; gap: 6px; }
+        .admin-sidebar nav a { display: flex; flex-direction: row; align-items: center; gap: 8px; padding: 10px 12px; color: #8C8985; font-size: 14px; border-radius: 8px; text-decoration: none; font-weight: 500; transition: background 0.2s, color 0.2s; }
+        .admin-sidebar > div:last-child { margin-top: auto; }
+        .admin-sidebar nav a span:first-child { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+        .admin-sidebar nav a:hover, .admin-sidebar nav a.active { background: #1C1C1C; color: white; }
+        .admin-main { margin-left: 220px; flex: 1; padding: 32px 40px; min-height: 100vh; }
+        .admin-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; background: white; padding: 20px 28px; border-radius: 12px; border: 1px solid #EFEDE9; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .admin-topbar h1 { font-size: 24px; font-weight: 700; }
+        .admin-card { background: white; border-radius: 12px; padding: 24px; border: 1px solid #EFEDE9; box-shadow: 0 2px 12px rgba(0,0,0,0.03); margin-bottom: 24px; }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th { background: #F5F6FA; padding: 14px; text-align: left; font-size: 12px; font-weight: 600; color: #8A8580; text-transform: uppercase; border-bottom: 1px solid #EFEDE9; }
+        .admin-table td { padding: 16px 14px; border-bottom: 1px solid #EFEDE9; font-size: 14px; vertical-align: middle; }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-Pending { background: #FFF8E1; color: #F57F17; }
+        .status-Approved { background: #E8F5E9; color: #2E7D32; }
+        .status-Rejected { background: #FFEBEE; color: #C62828; }
+
+        /* Mobile header + dropdown (hidden on desktop) */
+        .admin-mobile-header { display: none; }
+        .admin-mobile-nav { display: none; }
+
+        @@media (max-width: 768px) {
+            .admin-sidebar { display: none; }
+            .admin-main { margin-left: 0; padding: 10px; padding-top: 78px; }
+            .admin-topbar { padding: 10px 12px; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; border-radius: 10px; }
+            .admin-topbar h1 { font-size: 16px; }
+            .admin-topbar > div:last-child { gap: 8px !important; }
+            .admin-card { padding: 12px; margin-bottom: 14px; border-radius: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .admin-table { display: inline-table; }
+            .admin-table th, .admin-table td, .data-table th, .data-table td { padding: 7px 8px !important; font-size: 11px !important; white-space: nowrap; }
+
+            /* Dashboard: stat cards — auto-fit with smaller min */
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))"] { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; margin-bottom: 14px !important; }
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))"] .admin-card { padding: 10px !important; }
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))"] .admin-card > div:first-child { width: 36px !important; height: 36px !important; font-size: 15px !important; }
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))"] .admin-card > div:last-child div:first-child { font-size: 17px !important; }
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))"] .admin-card > div:last-child div:last-child { font-size: 11px !important; }
+            .admin-card[style*="display:flex; align-items:center; gap:20px"] { gap: 8px !important; }
+            .admin-card[style*="display:flex; align-items:center; gap:20px"] > div:first-child { width: 36px !important; height: 36px !important; font-size: 15px !important; flex-shrink: 0; }
+            .admin-card[style*="display:flex; align-items:center; gap:20px"] > div:last-child div:first-child { font-size: 17px !important; }
+
+            /* Dashboard stat row 2 */
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px"] { gap: 10px !important; margin-bottom: 14px !important; }
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px"] .admin-card { padding: 10px 12px !important; }
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px"] .admin-card strong { font-size: 16px !important; }
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px"] .admin-card span { font-size: 12px !important; }
+
+            /* Dashboard: bottom grid to single column */
+            div[style*="grid-template-columns: 1.3fr 1fr"] { grid-template-columns: 1fr !important; gap: 14px !important; }
+
+            /* Dashboard: recent tables */
+            .admin-card h3[style*="font-size:18px"] { font-size: 15px !important; margin-bottom: 12px !important; }
+
+            /* Properties list: title + button */
+            .admin-card > div[style*="display:flex; justify-content:space-between; align-items:center"] { flex-direction: column; align-items: stretch !important; gap: 10px; }
+            .admin-card > div[style*="display:flex; justify-content:space-between; align-items:center"] a { text-align: center; }
+
+            /* Details page: specs grid 2 cols */
+            div[style*="grid-template-columns:repeat(4, 1fr)"] { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; padding: 12px !important; }
+            div[style*="grid-template-columns:repeat(4, 1fr)"] > div div:first-child { font-size: 14px !important; }
+
+            /* Details: heading row */
+            div[style*="display:flex; justify-content:space-between; align-items:center; border-bottom"] { flex-direction: column; align-items: start !important; gap: 8px; }
+
+            /* Details: moderation bar */
+            div[style*="background:#F5F6FA; padding:20px; border-radius:12px"] { flex-direction: column !important; align-items: stretch !important; padding: 12px !important; gap: 10px !important; }
+            div[style*="background:#F5F6FA; padding:20px; border-radius:12px"] > div:last-child { flex-wrap: wrap; gap: 8px !important; }
+            div[style*="background:#F5F6FA; padding:20px; border-radius:12px"] form button { width: 100%; }
+
+            /* Details: gallery images */
+            div[style*="width:180px; height:120px"] { width: 120px !important; height: 85px !important; }
+
+            /* Details: owner profile */
+            div[style*="padding:16px; border:1px solid #EFEDE9"] { padding: 10px !important; }
+
+            /* Details: back buttons */
+            div[style*="display:flex; gap:16px; border-top"] { flex-direction: column; gap: 8px !important; }
+            div[style*="display:flex; gap:16px; border-top"] a { text-align: center; }
+
+            /* Edit page: card max-width */
+            .admin-card[style*="max-width:800px; margin:0 auto"] { max-width: 100% !important; }
+            .admin-card[style*="max-width:700px; margin:0 auto"] { max-width: 100% !important; }
+            .admin-card[style*="max-width:650px; margin:0 auto"] { max-width: 100% !important; }
+            div[style*="max-width:800px; margin:0 auto"] { max-width: 100% !important; }
+            div[style*="max-width:700px; margin:0 auto"] { max-width: 100% !important; }
+            div[style*="max-width:650px; margin:0 auto"] { max-width: 100% !important; }
+
+            /* Edit: form grid to 1 column */
+            div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; gap: 12px !important; }
+            div[style*="grid-column:span 2"] { grid-column: span 1 !important; }
+
+            /* Edit: action buttons */
+            div[style*="display:flex; gap:16px"]:not(.admin-mobile-header *) { flex-direction: column; gap: 8px !important; }
+            div[style*="display:flex; gap:16px"] button, div[style*="display:flex; gap:16px"] a { width: 100%; text-align: center; }
+
+            /* Delete page */
+            .admin-card[style*="max-width:550px; margin:40px auto"] { max-width: 100% !important; margin: 14px auto !important; }
+            div[style*="display:flex; gap:12px; justify-content:center"] { flex-direction: column; gap: 8px !important; }
+            div[style*="display:flex; gap:12px; justify-content:center"] a, div[style*="display:flex; gap:12px; justify-content:center"] button { width: 100%; text-align: center; }
+
+            /* Users, Reviews, Visit Requests tables */
+            .admin-card h2[style*="font-size:20px"] { font-size: 16px !important; margin-bottom: 12px !important; }
+
+            .admin-mobile-header {
+                display: flex; align-items: center; justify-content: space-between;
+                position: fixed; top: 0; left: 0; right: 0; z-index: 110;
+                background: #0A0A0A; padding: 0 16px; height: 62px;
+            }
+            .admin-mobile-header .logo {
+                color: var(--white); font-size: 18px; font-weight: 700; letter-spacing: 1.5px;
+                display: flex; align-items: center; gap: 8px; text-decoration: none;
+            }
+            .admin-mobile-header .hamburger {
+                display: flex; flex-direction: column; justify-content: center; gap: 5px;
+                width: 40px; height: 40px; background: none; border: none; cursor: pointer; padding: 0; z-index: 60;
+            }
+            .admin-mobile-header .hamburger span {
+                display: block; height: 2.5px; background: #C9C6C1; border-radius: 3px; transition: all .3s;
+            }
+            .admin-mobile-header .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+            .admin-mobile-header .hamburger.open span:nth-child(2) { opacity: 0; }
+            .admin-mobile-header .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+            .admin-mobile-nav {
+                display: block; position: fixed; top: 62px; left: 0; right: 0;
+                background: #0A0A0A; z-index: 105; padding: 8px 16px 16px;
+                border-bottom: 1px solid #1c1c1c;
+                opacity: 0; visibility: hidden; transform: translateY(-8px);
+                transition: all .25s cubic-bezier(.4,0,.2,1);
+            }
+            .admin-mobile-nav.open { opacity: 1; visibility: visible; transform: translateY(0); }
+            .admin-mobile-nav .mobile-links a { display: flex; align-items: center; gap: 6px; padding: 10px 14px; color: #E8E6E3; font-size: 13px; font-weight: 500; border-radius: 8px; transition: all .2s; }
+            .admin-mobile-nav .mobile-links a span:first-child { font-size: 16px; width: 22px; text-align: center; flex-shrink: 0; }
+            .admin-mobile-nav .mobile-links a:hover { background: #1C1C1C; }
+            .admin-mobile-nav .mobile-actions a span:first-child { width: auto; height: auto; border-radius: 0; background: none !important; display: inline; }
+        }
+        @@media (max-width: 480px) {
+            .admin-main { padding: 6px; padding-top: 72px; }
+            .admin-topbar { padding: 8px 10px; font-size: 14px; }
+            .admin-card { padding: 8px; }
+            .admin-table th, .admin-table td, .data-table th, .data-table td { padding: 5px 5px !important; font-size: 10px !important; }
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))"] { grid-template-columns: 1fr !important; gap: 8px !important; margin-bottom: 12px !important; }
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px"] { grid-template-columns: 1fr !important; }
+        }
+    @@keyframes _bank{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}@@keyframes _wingL{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.35)}}@@keyframes _wingR{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.35)}}
+    </style>
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- DESKTOP SIDEBAR -->
+        <div class="admin-sidebar">
+            <div>
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="logo">
+                    <svg viewBox="0 0 64 34" width="52" height="28" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+                        <g style="transform-origin: 32px 18px; animation: _bank 3.4s ease-in-out infinite;">
+                            <path d="M31.5 19C21 8.6 9.2 8.3 2.5 13.2C9.5 14.6 18.9 16.4 31.5 19Z" fill="rgba(255,255,255,0.9)" style="transform-box: fill-box; transform-origin: right center; animation: _wingL 1.05s cubic-bezier(0.37,0,0.63,1) infinite;"/>
+                            <path d="M32.5 19C43 8.6 54.8 8.3 61.5 13.2C54.5 14.6 45.1 16.4 32.5 19Z" fill="rgba(255,255,255,0.9)" style="transform-box: fill-box; transform-origin: left center; animation: _wingR 1.05s cubic-bezier(0.37,0,0.63,1) infinite;"/>
+                            <path d="M23.5 18.8C26.4 15.2 29.3 13.5 32 13.5C34.8 13.5 37.7 15.2 40.5 18.8C38.1 21.5 35.2 22.8 32 22.8C28.8 22.8 25.9 21.5 23.5 18.8Z" fill="rgba(255,255,255,0.6)"/>
+                            <ellipse cx="32" cy="10.2" rx="4.6" ry="3.4" fill="rgba(255,255,255,0.6)"/>
+                        </g>
+                    </svg>
+                    <span>ALBATROS</span>
+                </a>
+                <nav>
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><span>📊</span> <span>Dashboard</span></a>
+                    <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Index"><span>🏢</span> <span>Properties</span></a>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Index"><span>👥</span> <span>Users</span></a>
+                    <a asp-area="Admin" asp-controller="Reviews" asp-action="Index"><span>⭐</span> <span>Reviews</span></a>
+                    <a asp-area="Admin" asp-controller="VisitRequests" asp-action="Index"><span>🗓️</span> <span>Visit Requests</span></a>
+                    <a asp-area="Admin" asp-controller="Notifications" asp-action="Index"><span>🔔</span> <span>Notifications</span></a>
+                    <a asp-area="Admin" asp-controller="ContactMessages" asp-action="Index"><span>📬</span> <span>Messages</span></a>
+                </nav>
+            </div>
+            <div>
+                <nav>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" style="color: #4CAF50;"><span>🌐</span> <span>Live Site</span></a>
+                    <a asp-area="" asp-controller="Account" asp-action="Logout" style="color: #FF5252;"><span>🚪</span> <span>Sign Out</span></a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- MOBILE HEADER -->
+        <div class="admin-mobile-header">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="logo">
+                <svg viewBox="0 0 64 34" width="48" height="26" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+                    <g style="transform-origin: 32px 18px; animation: _bank 3.4s ease-in-out infinite;">
+                        <path d="M31.5 19C21 8.6 9.2 8.3 2.5 13.2C9.5 14.6 18.9 16.4 31.5 19Z" fill="rgba(255,255,255,0.9)" style="transform-box: fill-box; transform-origin: right center; animation: _wingL 1.05s cubic-bezier(0.37,0,0.63,1) infinite;"/>
+                        <path d="M32.5 19C43 8.6 54.8 8.3 61.5 13.2C54.5 14.6 45.1 16.4 32.5 19Z" fill="rgba(255,255,255,0.9)" style="transform-box: fill-box; transform-origin: left center; animation: _wingR 1.05s cubic-bezier(0.37,0,0.63,1) infinite;"/>
+                        <path d="M23.5 18.8C26.4 15.2 29.3 13.5 32 13.5C34.8 13.5 37.7 15.2 40.5 18.8C38.1 21.5 35.2 22.8 32 22.8C28.8 22.8 25.9 21.5 23.5 18.8Z" fill="rgba(255,255,255,0.6)"/>
+                        <ellipse cx="32" cy="10.2" rx="4.6" ry="3.4" fill="rgba(255,255,255,0.6)"/>
+                    </g>
+                </svg>
+                ALBATROS
+            </a>
+            <button class="hamburger" id="adminHamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+        <!-- MOBILE DROPDOWN -->
+        <div class="admin-mobile-nav" id="adminMobileNav">
+            <div class="mobile-nav-inner">
+                <nav class="mobile-links">
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><span>📊</span> Dashboard</a>
+                    <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Index"><span>🏢</span> Properties</a>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Index"><span>👥</span> Users</a>
+                    <a asp-area="Admin" asp-controller="Reviews" asp-action="Index"><span>⭐</span> Reviews</a>
+                    <a asp-area="Admin" asp-controller="VisitRequests" asp-action="Index"><span>🗓️</span> Visit Requests</a>
+                    <a asp-area="Admin" asp-controller="Notifications" asp-action="Index"><span>🔔</span> Notifications</a>
+                    <a asp-area="Admin" asp-controller="ContactMessages" asp-action="Index"><span>📬</span> Messages</a>
+                </nav>
+                <div class="mobile-actions">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-ghost" style="color:#4CAF50;border-color:#2A2A2A;"><span>🌐</span> Live Site</a>
+                    <a asp-area="" asp-controller="Account" asp-action="Logout" class="btn btn-maroon"><span>🚪</span> Sign Out</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN AREA -->
+        <div class="admin-main">
+            <div class="admin-topbar">
+                <div>
+                    <h1>@ViewData["Title"]</h1>
+                    <div style="font-size: 13px; color: #8A8580;">ALBATROS Executive Management Portal</div>
+                </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        @{
+                            var adminUserId = Context.Session.GetInt32("UserId");
+                            var adminUnread = 0;
+                            var adminAvatar = "";
+                            if (adminUserId != null)
+                            {
+                                var db2 = Context.RequestServices.GetRequiredService<Albatros.Data.AppDbContext>();
+                                adminUnread = db2.Notifications.Count(n => n.UserId == adminUserId.Value && !n.IsRead);
+                                var adminUser = db2.ApplicationUsers.Find(adminUserId.Value);
+                                if (adminUser != null) adminAvatar = adminUser.ProfilePictureUrl;
+                            }
+                        }
+                        <a asp-area="Admin" asp-controller="Notifications" asp-action="Index" style="position:relative; display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; background:#F5F6FA; text-decoration:none;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                            </svg>
+                            @if (adminUnread > 0)
+                            {
+                                <span style="position:absolute; top:-2px; right:-2px; background:#9C2A2A; color:white; font-size:10px; font-weight:700; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center;">@adminUnread</span>
+                            }
+                        </a>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 600; font-size: 14px;">@(Context.Session.GetString("UserName") ?? "System Administrator")</div>
+                            <div style="font-size: 12px; color: #9C2A2A; font-weight: 600;">Super Admin</div>
+                        </div>
+                        <a asp-controller="Account" asp-action="Profile" style="width: 40px; height: 40px; border-radius: 50%; background: #9C2A2A; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; overflow: hidden; text-decoration: none;">
+                            @if (!string.IsNullOrEmpty(adminAvatar))
+                            {
+                                <img src="@adminAvatar" style="width:100%;height:100%;object-fit:cover;" />
+                            }
+                            else
+                            {
+                                <span>A</span>
+                            }
+                        </a>
+                    </div>
+            </div>
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/js/i18n.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function(){
+        var hamburger = document.getElementById('adminHamburger');
+        var mnav = document.getElementById('adminMobileNav');
+        if (hamburger && mnav) {
+            hamburger.addEventListener('click', function(){
+                hamburger.classList.toggle('open');
+                mnav.classList.toggle('open');
+            });
+            mnav.querySelectorAll('a').forEach(function(link){
+                link.addEventListener('click', function(){
+                    hamburger.classList.remove('open');
+                    mnav.classList.remove('open');
+                });
+            });
+        }
+    });
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

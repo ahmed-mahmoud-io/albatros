@@ -1,0 +1,11 @@
+@model Albatros.Models.VisitRequest
+@{ ViewData["Title"] = "Delete Visit Request"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Delete Visit Request</h2>
+<p>Are you sure you want to delete this visit request?</p>
+
+<form asp-area="Admin" asp-controller="VisitRequests" asp-action="Delete" asp-route-id="@Model.RequestId" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="/Admin/VisitRequests" class="btn btn-outline-secondary">Cancel</a>
+</form>

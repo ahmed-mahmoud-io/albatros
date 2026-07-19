@@ -1,0 +1,88 @@
+@model Albatros.Models.Property
+@{
+    ViewData["Title"] = "Property Moderation Details";
+}
+
+<div class="admin-card" style="max-width:800px; margin:0 auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #EFEDE9; padding-bottom:20px; margin-bottom:24px;">
+        <div>
+            <h1 style="font-size:24px; font-weight:700;">@Model.Title</h1>
+            <div style="color:#8A8580; font-size:14px; margin-top:4px;">Property ID: #@Model.PropertyId • Listed on @Model.CreatedAt.ToString("MMM dd, yyyy")</div>
+        </div>
+        <div>
+            <span class="status-badge status-@Model.Status" style="font-size:14px; padding:6px 16px;">@Model.Status</span>
+        </div>
+    </div>
+
+    <!-- MODERATION ACTION BAR -->
+    <div style="background:#F5F6FA; padding:20px; border-radius:12px; margin-bottom:28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+            <div style="font-weight:600; font-size:15px;">Admin Moderation Action</div>
+            <div style="font-size:13px; color:#8A8580;">Approve to publish on live platform, or Reject to hide from listings.</div>
+        </div>
+        <div style="display:flex; gap:12px;">
+            <form asp-area="Admin" asp-controller="AdminProperties" asp-action="Approve" asp-route-id="@Model.PropertyId" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn" style="background:#2E7D32; color:white; padding:10px 20px; font-weight:600; border:none; border-radius:8px; cursor:pointer;">✅ Approve Listing</button>
+            </form>
+            <form asp-area="Admin" asp-controller="AdminProperties" asp-action="Reject" asp-route-id="@Model.PropertyId" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn" style="background:#C62828; color:white; padding:10px 20px; font-weight:600; border:none; border-radius:8px; cursor:pointer;">❌ Reject Listing</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- IMAGES -->
+    @if (Model.Images != null && Model.Images.Any())
+    {
+        <div style="margin-bottom:24px;">
+            <div style="font-size:12px; font-weight:600; color:#8A8580; text-transform:uppercase; margin-bottom:10px;">Gallery Images (@Model.Images.Count)</div>
+            <div style="display:flex; gap:12px; overflow-x:auto; padding-bottom:10px;">
+                @foreach (var img in Model.Images)
+                {
+                    <div style="width:180px; height:120px; border-radius:8px; background-image:url('@img.ImageUrl'); background-size:cover; background-position:center; flex-shrink:0;"></div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- SPECS -->
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:24px; background:#F8F8F8; padding:20px; border-radius:10px; text-align:center;">
+        <div>
+            <div style="font-size:18px; font-weight:700;">@Model.Price.ToString("N0") SAR</div>
+            <div style="font-size:12px; color:#8A8580; text-transform:uppercase; margin-top:4px;">Price</div>
+        </div>
+        <div>
+            <div style="font-size:18px; font-weight:700;">@Model.City</div>
+            <div style="font-size:12px; color:#8A8580; text-transform:uppercase; margin-top:4px;">City</div>
+        </div>
+        <div>
+            <div style="font-size:18px; font-weight:700;">@Model.Bedrooms Beds / @Model.Bathrooms Baths</div>
+            <div style="font-size:12px; color:#8A8580; text-transform:uppercase; margin-top:4px;">Specs</div>
+        </div>
+        <div>
+            <div style="font-size:18px; font-weight:700;">@Model.Area m²</div>
+            <div style="font-size:12px; color:#8A8580; text-transform:uppercase; margin-top:4px;">Area</div>
+        </div>
+    </div>
+
+    <div style="margin-bottom:28px;">
+        <div style="font-size:12px; font-weight:600; color:#8A8580; text-transform:uppercase; margin-bottom:8px;">Description</div>
+        <p style="line-height:1.7; color:#333; white-space:pre-line;">@Model.Description</p>
+    </div>
+
+    @if (Model.User != null)
+    {
+        <div style="margin-bottom:28px; padding:16px; border:1px solid #EFEDE9; border-radius:10px;">
+            <div style="font-size:12px; font-weight:600; color:#8A8580; text-transform:uppercase; margin-bottom:8px;">Owner Profile</div>
+            <div><strong>Name:</strong> @Model.User.FullName</div>
+            <div><strong>Email:</strong> @Model.User.Email</div>
+            <div><strong>Phone:</strong> @(Model.User.PhoneNumber ?? "N/A")</div>
+        </div>
+    }
+
+    <div style="display:flex; gap:16px; border-top:1px solid #EFEDE9; padding-top:24px;">
+        <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Index" class="btn btn-ghost" style="padding:12px 24px;">← Back to Properties List</a>
+        <a asp-area="Admin" asp-controller="AdminProperties" asp-action="Edit" asp-route-id="@Model.PropertyId" class="btn btn-ghost" style="padding:12px 24px;">Edit Details</a>
+    </div>
+</div>

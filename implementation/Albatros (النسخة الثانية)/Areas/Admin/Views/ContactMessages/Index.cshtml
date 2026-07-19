@@ -1,0 +1,47 @@
+@model IEnumerable<Albatros.Models.ContactMessage>
+@{
+    ViewData["Title"] = "Contact Messages";
+}
+
+<div class="admin-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <h2 style="font-size:20px;">Inbox (@Model.Count(m => !m.IsRead) unread)</h2>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Subject</th>
+                    <th>Email / Phone</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model)
+                {
+                    <tr style="@(m.IsRead ? "" : "font-weight:600; background:#FFF8F0;")">
+                        <td style="color:#8A8580; font-size:13px;">@m.CreatedAt.ToString("MMM dd, yyyy")</td>
+                        <td>@m.FullName</td>
+                        <td>@m.Subject</td>
+                        <td style="font-size:13px;">@m.Email<br/><span style="color:#8A8580;">@m.Phone</span></td>
+                        <td style="text-align:right; white-space:nowrap;">
+                            <a asp-area="Admin" asp-controller="ContactMessages" asp-action="Details" asp-route-id="@m.Id" class="btn btn-ghost" style="padding:6px 12px; font-size:12px; text-decoration:none;">View</a>
+                            <form method="post" asp-area="Admin" asp-controller="ContactMessages" asp-action="Delete" asp-route-id="@m.Id" style="display:inline;" onsubmit="return confirm('Delete this message?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn" style="padding:6px 12px; font-size:12px; background:#FFEBEE; color:#C62828; border:none; cursor:pointer;">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p style="padding:40px; text-align:center; color:#8A8580;">No messages yet.</p>
+    }
+</div>

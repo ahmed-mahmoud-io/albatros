@@ -1,0 +1,37 @@
+@{ ViewData["Title"] = "Admin Dashboard"; }
+
+<h2 style="font-family:'Playfair Display',serif;">Admin Dashboard</h2>
+
+<div class="row mt-4 g-3">
+    <div class="col-md-3">
+        <div class="card"><div class="card-body">
+            <div class="text-muted small">Total Properties</div>
+            <div class="fs-3 fw-bold">@ViewBag.PropertiesCount</div>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card"><div class="card-body">
+            <div class="text-muted small">Registered Users</div>
+            <div class="fs-3 fw-bold">@ViewBag.UsersCount</div>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card"><div class="card-body">
+            <div class="text-muted small">Favorites Saved</div>
+            <div class="fs-3 fw-bold">@ViewBag.FavoritesCount</div>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card"><div class="card-body">
+            <div class="text-muted small">Pending Visit Requests</div>
+            <div class="fs-3 fw-bold">@ViewBag.PendingVisits</div>
+        </div></div>
+    </div>
+</div>
+
+<div class="mt-4 d-flex gap-2">
+    <a href="/Admin/Properties" class="btn btn-outline-dark">Manage Properties</a>
+    <a href="/Admin/Users" class="btn btn-outline-dark">Manage Users</a>
+    <a href="/Admin/VisitRequests" class="btn btn-outline-dark">Visit Requests</a>
+    <a href="/Admin/Reviews" class="btn btn-outline-dark">Reviews</a>
+</div>

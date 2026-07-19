@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | ALBATROS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon:#9C2A2A; --maroon-dark:#7A2020; --black:#0A0A0A; --white:#FFFFFF;
+    --gray-bg:#F8F8F8; --gray-mid:#E4E1DC; --text-muted:#8A8580;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--white);color:var(--black);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.display{font-family:'Playfair Display',serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+
+  header{background:var(--black);position:sticky;top:0;z-index:50;border-bottom:1px solid #1c1c1c;}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;height:78px;}
+  .logo{color:var(--white);font-size:22px;font-weight:700;letter-spacing:2px;display:flex;align-items:center;gap:10px;}
+    .logo-mark{
+    width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;cursor:pointer;
+  }
+  .logo-mark svg{overflow:visible;display:block;}
+  .logo-mark .wing{transform-origin:24px 24px;transform-box:fill-box;animation:wingFlap 1.5s ease-in-out both;}
+  .logo-mark .wing-r{animation-name:wingFlapR;}
+  .logo-mark .bird-fly{transform-origin:24px 24px;animation:flyIn 1.5s cubic-bezier(.3,1.15,.6,1) both;}
+  .logo-mark:hover .bird-fly, .logo-mark.replay .bird-fly{animation-play-state:running;}
+  @keyframes flyIn{
+    0%{transform:translate(120px,-70px) rotate(28deg) scale(.5);opacity:0;}
+    18%{opacity:1;}
+    55%{transform:translate(-14px,10px) rotate(-8deg) scale(1.08);}
+    78%{transform:translate(4px,-3px) rotate(4deg) scale(.97);}
+    100%{transform:translate(0,0) rotate(0deg) scale(1);}
+  }
+  @keyframes wingFlap{
+    0%{transform:scaleY(1);}
+    20%{transform:scaleY(.35);}
+    40%{transform:scaleY(1);}
+    60%{transform:scaleY(.35);}
+    80%{transform:scaleY(.9);}
+    100%{transform:scaleY(.2);}
+  }
+  @keyframes wingFlapR{
+    0%{transform:scaleY(1);}
+    20%{transform:scaleY(.35);}
+    40%{transform:scaleY(1);}
+    60%{transform:scaleY(.35);}
+    80%{transform:scaleY(.9);}
+    100%{transform:scaleY(.2);}
+  }
+  nav{display:flex;gap:38px;}
+  nav a{color:#C9C6C1;font-size:14.5px;font-weight:500;transition:color .2s;}
+  nav a:hover{color:var(--white);}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .btn{font-size:13.5px;font-weight:600;padding:10px 20px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .2s;white-space:nowrap;}
+  .btn-ghost{background:#1C1C1C;color:#E8E6E3;border:1px solid #313131;}
+  .btn-ghost:hover{background:#262626;}
+  .btn-maroon{background:var(--maroon);color:var(--white);}
+  .btn-maroon:hover{background:var(--maroon-dark);}
+  .btn-full{width:100%;text-align:center;}
+  .lang{display:flex;align-items:center;gap:6px;color:#C9C6C1;font-size:13.5px;font-weight:500;padding:8px 12px;border-radius:6px;cursor:pointer;border:1px solid #313131;}
+  .lang:hover{background:#1C1C1C;}
+
+  .page-head{background:var(--gray-bg);padding:60px 0 50px;text-align:center;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--maroon);margin-bottom:18px;}
+  .page-head h1{font-size:36px;font-weight:700;margin-bottom:14px;}
+  .page-head p{color:#5A5A5A;font-size:15px;max-width:480px;margin:0 auto;}
+
+  .contact-layout{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;padding:60px 0 90px;align-items:start;}
+
+  .form-card{background:var(--white);border:1px solid var(--gray-mid);border-radius:16px;padding:36px;}
+  .form-card h3{font-size:19px;font-weight:700;margin-bottom:24px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:#5A5A5A;margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px;}
+  .field input, .field select, .field textarea{
+    width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--gray-mid);
+    background:var(--gray-bg);font-size:14px;font-family:'Inter',sans-serif;color:var(--black);
+  }
+  .field textarea{resize:vertical;min-height:120px;font-family:'Inter',sans-serif;}
+  .field input:focus, .field select:focus, .field textarea:focus{outline:2px solid var(--maroon);outline-offset:1px;}
+
+  .info-card{background:var(--black);border-radius:16px;padding:34px;color:var(--white);margin-bottom:22px;}
+  .info-card h3{font-size:17px;font-weight:700;margin-bottom:20px;}
+  .info-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;font-size:13.8px;color:#D8D5D1;line-height:1.6;}
+  .info-row b{display:block;color:var(--white);font-size:13.5px;margin-bottom:2px;}
+  .map-box{
+    height:220px;border-radius:16px;background:var(--gray-bg);
+    border:1px solid var(--gray-mid);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-muted);font-size:13.5px;
+    background-image:radial-gradient(circle at 30% 30%, #eee 1px, transparent 1px), radial-gradient(circle at 70% 60%, #eee 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+
+  footer{background:var(--black);padding:70px 0 28px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:40px;padding-bottom:50px;border-bottom:1px solid #1D1D1D;}
+  .foot-logo{color:var(--white);font-size:20px;font-weight:700;letter-spacing:2px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .foot-desc{color:#8C8985;font-size:13.5px;line-height:1.7;max-width:280px;}
+  .foot-col h4{color:var(--white);font-size:13.5px;font-weight:600;margin-bottom:18px;letter-spacing:.5px;text-transform:uppercase;}
+  .foot-col a{display:block;color:#8C8985;font-size:13.8px;margin-bottom:12px;}
+  .foot-col a:hover{color:var(--white);}
+  .foot-contact-item{display:flex;gap:10px;color:#8C8985;font-size:13.5px;margin-bottom:14px;line-height:1.5;}
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;color:#65625E;font-size:12.5px;}
+  .foot-social{display:flex;gap:10px;}
+  .foot-social a{width:34px;height:34px;border-radius:50%;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#8C8985;}
+  .foot-social a:hover{border-color:var(--maroon);color:var(--white);}
+
+  @media(max-width:980px){
+    .contact-layout{grid-template-columns:1fr;}
+    .form-row{grid-template-columns:1fr;}
+    nav{display:none;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+  }
+
+  html[dir="rtl"] body{font-family:'Cairo',sans-serif;}
+  html[dir="rtl"] h1,html[dir="rtl"] h2,html[dir="rtl"] h3{font-family:'Cairo',sans-serif;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <div class="logo"><span class="logo-mark bird-logo">
+        <svg viewBox="0 0 48 48" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+          <g class="bird-fly">
+            <path class="wing wing-l" d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="#9C2A2A"/>
+            <path class="wing wing-r" d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="#9C2A2A"/>
+            <path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="#7A2020"/>
+          </g>
+        </svg>
+      </span>ALBATROS</div>
+    <nav>
+      <a href="index.html#features" data-i18n="nav_features">Features</a>
+      <a href="properties.html" data-i18n="nav_properties">Properties</a>
+      <a href="favorites.html" data-i18n="nav_favorites">Favorites</a>
+      <a href="contact.html" data-i18n="nav_contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang" id="langToggle" role="button" tabindex="0">
+        <span id="langLabel">EN</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#C9C6C1" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </div>
+      <button class="btn btn-ghost" data-i18n="nav_search">Search now</button>
+      <a href="login.html" class="btn btn-ghost" data-i18n="nav_login">Login</a>
+      <a href="register.html" class="btn btn-maroon" data-i18n="nav_signup">Sign up</a>
+    </div>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n="c_eyebrow">Get in Touch</div>
+    <h1 data-i18n="c_title">Let's find your next property together.</h1>
+    <p data-i18n="c_lead">Whether you're buying, selling or investing — our advisors respond within one business day.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="contact-layout">
+    <div class="form-card">
+      <h3 data-i18n="c_form_h">Send us a message</h3>
+      <form onsubmit="return false;">
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="c_name">Full Name</label>
+            <input type="text">
+          </div>
+          <div class="field">
+            <label data-i18n="c_phone">Phone Number</label>
+            <input type="tel">
+          </div>
+        </div>
+        <div class="field">
+          <label data-i18n="c_email">Email Address</label>
+          <input type="email">
+        </div>
+        <div class="field">
+          <label data-i18n="c_subject">I'm interested in</label>
+          <select>
+            <option data-i18n="c_subject_buy">Buying</option>
+            <option data-i18n="c_subject_sell">Selling</option>
+            <option data-i18n="c_subject_rent">Renting</option>
+            <option data-i18n="c_subject_other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label data-i18n="c_message">Message</label>
+          <textarea data-i18n-ph="c_message_ph" placeholder="Tell us what you're looking for..."></textarea>
+        </div>
+        <button class="btn btn-maroon btn-full" style="padding:14px;" data-i18n="c_send">Send Message</button>
+      </form>
+    </div>
+
+    <div>
+      <div class="info-card">
+        <h3 data-i18n="c_info_h">Office Information</h3>
+        <div class="info-row">📍 <div><b data-i18n="c_office">Riyadh Head Office</b><span data-i18n="foot_address">King Fahd Road, Riyadh, Saudi Arabia</span></div></div>
+        <div class="info-row">📞 <div><b>+966 11 234 5678</b></div></div>
+        <div class="info-row">✉️ <div><b>hello@albatros.sa</b></div></div>
+        <div class="info-row">🕐 <div><b data-i18n="c_hours_h">Working Hours</b><span data-i18n="c_hours">Sunday – Thursday, 9:00 AM – 6:00 PM</span></div></div>
+      </div>
+      <div class="map-box"><span data-i18n="c_map_note">Interactive map coming soon</span></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo"><span class="logo-mark bird-logo">
+        <svg viewBox="0 0 48 48" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+          <g class="bird-fly">
+            <path class="wing wing-l" d="M24 24 C10 12, 0 15, 3 27 C10 21, 18 22, 24 24 Z" fill="#9C2A2A"/>
+            <path class="wing wing-r" d="M24 24 C38 12, 48 15, 45 27 C38 21, 30 22, 24 24 Z" fill="#9C2A2A"/>
+            <path d="M17 25 Q24 19 31 25 Q28 30 24 30 Q20 30 17 25 Z" fill="#7A2020"/>
+          </g>
+        </svg>
+      </span>ALBATROS</div>
+        <p class="foot-desc" data-i18n="foot_desc">A premium real estate platform connecting buyers, sellers and investors across Saudi Arabia with verified, high-value properties.</p>
+        <div class="foot-social" style="margin-top:22px;"><a href="#">in</a><a href="#">X</a><a href="#">ig</a></div>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_links">Quick Links</h4>
+        <a href="index.html" data-i18n="foot_home">Home</a>
+        <a href="properties.html" data-i18n="nav_properties">Properties</a>
+        <a href="index.html#features" data-i18n="nav_features">Features</a>
+        <a href="contact.html" data-i18n="nav_contact">Contact</a>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_support">Support</h4>
+        <a href="#" data-i18n="foot_help">Help Center</a>
+        <a href="#" data-i18n="foot_terms">Terms of Service</a>
+        <a href="#" data-i18n="foot_privacy">Privacy Policy</a>
+        <a href="#" data-i18n="foot_faq">FAQs</a>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_contact">Contact</h4>
+        <div class="foot-contact-item">✉️ hello@albatros.sa</div>
+        <div class="foot-contact-item">📞 +966 11 234 5678</div>
+        <div class="foot-contact-item">📍 <span data-i18n="foot_address">King Fahd Road, Riyadh, Saudi Arabia</span></div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span data-i18n="foot_rights">© 2026 ALBATROS. All rights reserved.</span>
+      <span data-i18n="foot_tagline">Designed for the Saudi real estate market</span>
+    </div>
+  </div>
+</footer>
+
+<script src="i18n.js"></script>
+</body>
+</html>

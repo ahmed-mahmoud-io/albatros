@@ -1,0 +1,55 @@
+@model Albatros.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+@section Styles {
+<style>
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        border: 1px solid #EFEDE9;
+        max-width: 550px;
+        margin: 40px auto;
+    }
+    .form-card h1 { font-size: 24px; margin-bottom: 24px; font-family: 'Playfair Display', serif; }
+    .field { margin-bottom: 20px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: #5A5A5A; margin-bottom: 8px; text-transform: uppercase; }
+    .field input { width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--gray-mid); background: var(--gray-bg); font-size: 14px; }
+    .field input:focus { border-color: var(--maroon); background: white; outline: none; }
+    .field input[disabled] { opacity: 0.6; cursor: not-allowed; }
+</style>
+}
+
+<div class="wrap">
+    <div class="form-card">
+        <h1 data-i18n="edit_profile">Edit Profile</h1>
+
+        <form asp-controller="Account" asp-action="EditProfile" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="userId" value="@Model.UserId" />
+
+            <div class="field">
+                <label data-i18n="email">Email Address</label>
+                <input type="email" value="@Model.Email" disabled />
+            </div>
+
+            <div class="field">
+                <label data-i18n="full_name">Full Name</label>
+                <input type="text" name="fullName" value="@Model.FullName" required />
+            </div>
+
+            <div class="field">
+                <label data-i18n="phone">Phone Number</label>
+                <input type="tel" name="phoneNumber" value="@Model.PhoneNumber" required />
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:24px;">
+                <button type="submit" class="btn btn-maroon" data-i18n="save_changes">Save Changes</button>
+                <a asp-controller="Account" asp-action="Profile" class="btn btn-ghost" data-i18n="cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
